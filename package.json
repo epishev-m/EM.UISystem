@@ -1,0 +1,13 @@
+{
+	"name": "com.em.uisystem",
+	"displayName": "EM UISystem",
+	"version": "0.0.1",
+    "unity": "2020.1",
+    "unityRelease": "13f1",
+	"dependencies": {
+	},
+    "author": {
+        "name": "Maxim Epishev",
+        "email": "epishev.m@mail.ru"
+    }
+}

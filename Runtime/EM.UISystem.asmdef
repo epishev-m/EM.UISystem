@@ -1,6 +1,8 @@
 {
     "name": "EM.UISystem",
-    "references": [],
+    "references": [
+        "EM.Foundation"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

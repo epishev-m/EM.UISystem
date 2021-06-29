@@ -1,6 +1,8 @@
 {
     "name": "EM.UISystem.Tests",
-    "references": [],
+    "references": [
+        "EM.UISystem"
+    ],
     "includePlatforms": [
         "Editor"
     ],

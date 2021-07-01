@@ -1,7 +1,9 @@
 {
     "name": "EM.UISystem.Tests",
+    "rootNamespace": "",
     "references": [
-        "EM.UISystem"
+        "EM.UISystem",
+        "EM.Foundation"
     ],
     "includePlatforms": [
         "Editor"

@@ -70,15 +70,15 @@ public sealed class Panel :
 
 			if (animation == null)
 			{
-				OnPanelHided();
+				OnPanelHidden();
 			}
 			else
 			{
-				animation.Hide(panel, OnPanelHided);
+				animation.Hide(panel, OnPanelHidden);
 			}
 		}
 
-		void OnPanelHided()
+		void OnPanelHidden()
 		{
 			canvas.enabled = false;
 			onPanelClosed?.Invoke();

@@ -10,7 +10,7 @@ internal sealed class ComposerCompleteTests
 	public void ComposerComplete_Constructor_Exception1()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest()
 		};
@@ -36,7 +36,7 @@ internal sealed class ComposerCompleteTests
 	public void ComposerComplete_Constructor_Exception2()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest()
 		};
@@ -85,7 +85,7 @@ internal sealed class ComposerCompleteTests
 	public void ComposerComplete_GetCommand()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest()
 		};
@@ -105,7 +105,7 @@ internal sealed class ComposerCompleteTests
 	public void ComposerComplete_InSequence()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest()
 		};
@@ -125,7 +125,7 @@ internal sealed class ComposerCompleteTests
 	public void ComposerComplete_InParallel()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest()
 		};

@@ -11,7 +11,7 @@ public interface IPanelAnimation
 
 	void Hide(
 		GameObject panel,
-		Action onPanelHided);
+		Action onPanelHidden);
 }
 
 }

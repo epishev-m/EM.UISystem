@@ -30,7 +30,7 @@ internal sealed class ComposerTests
 	public void Composer_Constructor_Exception2()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest("test")
 		};
@@ -54,7 +54,7 @@ internal sealed class ComposerTests
 	public void Composer_Constructor_InParallel()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest("test")
 		};
@@ -72,7 +72,7 @@ internal sealed class ComposerTests
 	public void Composer_Constructor_InSequence()
 	{
 		// Arrange
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			new PanelTest("test")
 		};
@@ -92,7 +92,7 @@ internal sealed class ComposerTests
 		// Arrange
 		const string name = "test";
 		var expected = new PanelTest(name);
-		var panels = new List<IPanel>()
+		var panels = new List<IPanel>
 		{
 			expected
 		};

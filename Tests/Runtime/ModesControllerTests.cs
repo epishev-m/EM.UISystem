@@ -116,7 +116,7 @@ internal sealed class ModesControllerTests
 
 		// Act
 		modesController.Add(panel, Modes.None);
-		var actual = modesController.TryGetPanelInfo(panel, out var panelInfo);
+		var actual = modesController.TryGetPanelInfo(panel, out _);
 
 		// Assert
 		Assert.IsTrue(actual);
@@ -130,7 +130,7 @@ internal sealed class ModesControllerTests
 		var modesController = new ModesController();
 
 		// Act
-		var actual = modesController.TryGetPanelInfo(panel, out var panelInfo);
+		var actual = modesController.TryGetPanelInfo(panel, out _);
 
 		// Assert
 		Assert.IsFalse(actual);

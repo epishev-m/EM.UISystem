@@ -323,10 +323,10 @@ internal sealed class PanelTests
 
 		public void Hide(
 			GameObject panel,
-			Action onPanelHidded)
+			Action onPanelHidden)
 		{
 			HideValue++;
-			onPanelHidded?.Invoke();
+			onPanelHidden?.Invoke();
 		}
 
 		public void Show(

@@ -16,29 +16,7 @@ internal sealed class PanelTests
 		// Act
 		try
 		{
-			var unused = new Panel(null, null);
-		}
-		catch (ArgumentNullException)
-		{
-			actual = true;
-		}
-
-		// Assert
-		Assert.IsTrue(actual);
-	}
-
-	[Test]
-	public void Panel_Constructor_NotCanvas_ExceptionCanvas()
-	{
-		// Arrange
-		var actual = false;
-		var gameObject = new GameObject();
-		gameObject.AddComponent<CanvasGroup>();
-
-		// Act
-		try
-		{
-			var unused = new Panel(gameObject, null);
+			var unused = new Panel(null);
 		}
 		catch (ArgumentNullException)
 		{
@@ -55,12 +33,12 @@ internal sealed class PanelTests
 		// Arrange
 		var actual = false;
 		var gameObject = new GameObject();
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 
 		// Act
 		try
 		{
-			var unused = new Panel(gameObject, null);
+			var unused = new Panel(canvas);
 		}
 		catch (ArgumentNullException)
 		{
@@ -80,9 +58,9 @@ internal sealed class PanelTests
 		// Arrange
 		const string expected = "panel";
 		var gameObject = new GameObject(expected);
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		var actual = panel.Name;
@@ -99,9 +77,9 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		var actual = panel.IsInteractable;
@@ -115,9 +93,9 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -132,9 +110,9 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -153,9 +131,9 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		var actual = panel.IsOpened;
@@ -169,9 +147,9 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -186,9 +164,9 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -208,9 +186,9 @@ internal sealed class PanelTests
 		// Arrange
 		var actual = false;
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(() => actual = true);
@@ -225,9 +203,9 @@ internal sealed class PanelTests
 		// Arrange
 		var actual = false;
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var panel = new Panel(gameObject, null);
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(() => actual = true);
@@ -244,10 +222,10 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var animation = new Animation();
-		var panel = new Panel(gameObject, animation);
+		var animation = gameObject.AddComponent<Animation>();
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -262,10 +240,10 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var animation = new Animation();
-		var panel = new Panel(gameObject, animation);
+		var animation = gameObject.AddComponent<Animation>();
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -281,10 +259,10 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var animation = new Animation();
-		var panel = new Panel(gameObject, animation);
+		var animation = gameObject.AddComponent<Animation>();
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Close(null);
@@ -299,10 +277,10 @@ internal sealed class PanelTests
 	{
 		// Arrange
 		var gameObject = new GameObject("panel");
-		gameObject.AddComponent<Canvas>();
+		var canvas = gameObject.AddComponent<Canvas>();
 		gameObject.AddComponent<CanvasGroup>();
-		var animation = new Animation();
-		var panel = new Panel(gameObject, animation);
+		var animation = gameObject.AddComponent<Animation>();
+		var panel = new Panel(canvas);
 
 		// Act
 		panel.Open(null);
@@ -317,6 +295,7 @@ internal sealed class PanelTests
 	#region Nested
 
 	private sealed class Animation :
+		MonoBehaviour,
 		IPanelAnimation
 	{
 		#region IPanelAnimation

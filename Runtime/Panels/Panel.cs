@@ -7,17 +7,15 @@ using UnityEngine;
 public sealed class Panel :
 	IPanel
 {
-	private readonly GameObject panel;
-
-	private readonly IPanelAnimation animation;
-
 	private readonly Canvas canvas;
 
 	private readonly CanvasGroup canvasGroup;
 
+	private readonly IPanelAnimation animation;
+
 	#region IPanel
 
-	public string Name => panel.name;
+	public string Name => canvas.name;
 
 	public bool IsOpened => canvas.enabled;
 
@@ -30,7 +28,7 @@ public sealed class Panel :
 	public void Open(
 		Action onPanelOpened)
 	{
-		panel.transform.SetAsLastSibling();
+		canvas.transform.SetAsLastSibling();
 
 		if (canvas.enabled)
 		{
@@ -46,7 +44,7 @@ public sealed class Panel :
 			}
 			else
 			{
-				animation.Show(panel, OnPanelShowed);
+				animation.Show(canvas.gameObject, OnPanelShowed);
 			}
 		}
 
@@ -74,7 +72,7 @@ public sealed class Panel :
 			}
 			else
 			{
-				animation.Hide(panel, OnPanelHidden);
+				animation.Hide(canvas.gameObject, OnPanelHidden);
 			}
 		}
 
@@ -89,18 +87,15 @@ public sealed class Panel :
 	#region UIPanel
 
 	public Panel(
-		GameObject panel,
-		IPanelAnimation animation)
+		Canvas canvas)
 	{
-		Requires.NotNull(panel, nameof(panel));
-
-		this.panel = panel;
-		this.animation = animation;
-
-		canvas = panel.GetComponent<Canvas>();
-		canvasGroup = panel.GetComponent<CanvasGroup>();
-
 		Requires.NotNull(canvas, nameof(canvas));
+
+		this.canvas = canvas;
+
+		canvasGroup = canvas.GetComponent<CanvasGroup>();
+		animation = canvas.GetComponent<IPanelAnimation>();
+
 		Requires.NotNull(canvasGroup, nameof(canvasGroup));
 
 		canvas.enabled = false;

@@ -2,14 +2,14 @@
 using EM.UI;
 using NUnit.Framework;
 
-internal sealed class ModesControllerTests
+internal sealed class ModalLogicControllerTests
 {
 	[Test]
-	public void ModesController_Add_Exception()
+	public void ModalLogicController_Add_Exception()
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModesController();
+		var modesController = new ModalLogicController();
 
 		// Act
 		try
@@ -26,11 +26,11 @@ internal sealed class ModesControllerTests
 	}
 
 	[Test]
-	public void ModesController_Remove_Exception()
+	public void ModalLogicController_Remove_Exception()
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModesController();
+		var modesController = new ModalLogicController();
 
 		// Act
 		try
@@ -47,11 +47,11 @@ internal sealed class ModesControllerTests
 	}
 
 	[Test]
-	public void ModesController_PrepareAdd_Callback()
+	public void ModalLogicController_PrepareAdd_Callback()
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModesController();
+		var modesController = new ModalLogicController();
 
 		// Act
 		modesController.PrepareAdd(Modes.None, () => actual = true);
@@ -61,11 +61,11 @@ internal sealed class ModesControllerTests
 	}
 
 	[Test]
-	public void ModesController_PrepareRemove_Callback()
+	public void ModalLogicController_PrepareRemove_Callback()
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModesController();
+		var modesController = new ModalLogicController();
 
 		// Act
 		modesController.PrepareRemove(Modes.None, () => actual = true);
@@ -75,32 +75,32 @@ internal sealed class ModesControllerTests
 	}
 
 	[Test]
-	public void ModesController_TryGetPanelInfo_Panel()
+	public void ModalLogicController_TryGetViewInfo_Panel()
 	{
 		// Arrange
-		var expected = new PanelTest();
-		var modesController = new ModesController();
+		var expected = new ViewTest();
+		var modesController = new ModalLogicController();
 
 		// Act
 		modesController.Add(expected, Modes.None);
-		modesController.TryGetPanelInfo(expected, out var panelInfo);
-		var actual = panelInfo.Panel;
+		modesController.TryGetViewInfo(expected, out var viewInfo);
+		var actual = viewInfo.View;
 
 		// Assert
 		Assert.AreEqual(expected, actual);
 	}
 
 	[Test]
-	public void ModesController_TryGetPanelInfo_Mode()
+	public void ModalLogicController_TryGetViewInfo_Mode()
 	{
 		// Arrange
 		const Modes expected = Modes.None;
-		var panel = new PanelTest();
-		var modesController = new ModesController();
+		var panel = new ViewTest();
+		var modesController = new ModalLogicController();
 
 		// Act
 		modesController.Add(panel, expected);
-		modesController.TryGetPanelInfo(panel, out var panelInfo);
+		modesController.TryGetViewInfo(panel, out var panelInfo);
 		var actual = panelInfo.Mode;
 
 		// Assert
@@ -108,29 +108,29 @@ internal sealed class ModesControllerTests
 	}
 
 	[Test]
-	public void ModesController_TryGetPanelInfo_True()
+	public void ModalLogicController_TryGetViewInfo_True()
 	{
 		// Arrange
-		var panel = new PanelTest();
-		var modesController = new ModesController();
+		var view = new ViewTest();
+		var modesController = new ModalLogicController();
 
 		// Act
-		modesController.Add(panel, Modes.None);
-		var actual = modesController.TryGetPanelInfo(panel, out _);
+		modesController.Add(view, Modes.None);
+		var actual = modesController.TryGetViewInfo(view, out _);
 
 		// Assert
 		Assert.IsTrue(actual);
 	}
 
 	[Test]
-	public void ModesController_TryGetPanelInfo_False()
+	public void ModalLogicController_TryGetViewInfo_False()
 	{
 		// Arrange
-		var panel = new PanelTest();
-		var modesController = new ModesController();
+		var view = new ViewTest();
+		var modesController = new ModalLogicController();
 
 		// Act
-		var actual = modesController.TryGetPanelInfo(panel, out _);
+		var actual = modesController.TryGetViewInfo(view, out _);
 
 		// Assert
 		Assert.IsFalse(actual);
@@ -138,14 +138,9 @@ internal sealed class ModesControllerTests
 
 	#region Nested
 
-	private sealed class PanelTest :
-		IPanel
+	private sealed class ViewTest :
+		IView
 	{
-		public string Name
-		{
-			get;
-		}
-
 		public bool IsOpened
 		{
 			get;
@@ -157,21 +152,18 @@ internal sealed class ModesControllerTests
 			set;
 		}
 
-		public void Open(
-			Action onPanelOpened)
+		public void Open(Action onPanelOpened)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Close(
-			Action onPanelClosed)
+		public void Close(Action onPanelClosed)
 		{
 			throw new NotImplementedException();
 		}
 
-		public PanelTest()
+		public ViewTest()
 		{
-			Name = "test";
 			IsOpened = false;
 		}
 	}

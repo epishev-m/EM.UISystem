@@ -1,7 +1,11 @@
 {
     "name": "EM.UISystem",
+    "rootNamespace": "",
     "references": [
-        "EM.Foundation"
+        "EM.Foundation",
+        "EM.IoC",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

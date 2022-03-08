@@ -2,10 +2,10 @@
 using EM.UI;
 using NUnit.Framework;
 
-internal sealed class PanelInfoTests
+internal sealed class ViewInfoTests
 {
 	[Test]
-	public void PanelInfo_Constructor_Exception()
+	public void ViewInfo_Constructor_Exception()
 	{
 		// Arrange
 		var actual = false;
@@ -13,7 +13,7 @@ internal sealed class PanelInfoTests
 		// Act
 		try
 		{
-			var unused = new PanelInfo(null, Modes.None);
+			var unused = new ViewInfo(null, Modes.None);
 		}
 		catch (ArgumentNullException)
 		{
@@ -25,28 +25,28 @@ internal sealed class PanelInfoTests
 	}
 
 	[Test]
-	public void PanelInfo_Panel()
+	public void ViewInfo_Panel()
 	{
 		// Arrange
-		var expected = new PanelTest();
+		var expected = new ViewTest();
 
 		// Act
-		var panelInfo = new PanelInfo(expected, Modes.None);
-		var actual = panelInfo.Panel;
+		var panelInfo = new ViewInfo(expected, Modes.None);
+		var actual = panelInfo.View;
 
 		// Assert
 		Assert.AreEqual(expected, actual);
 	}
 
 	[Test]
-	public void PanelInfo_Mode()
+	public void ViewInfo_Mode()
 	{
 		// Arrange
 		const Modes expected = Modes.None;
-		var panel = new PanelTest();
+		var panel = new ViewTest();
 
 		// Act
-		var panelInfo = new PanelInfo(panel, expected);
+		var panelInfo = new ViewInfo(panel, expected);
 		var actual = panelInfo.Mode;
 
 		// Assert
@@ -55,14 +55,9 @@ internal sealed class PanelInfoTests
 
 	#region Nested
 
-	private sealed class PanelTest :
-		IPanel
+	private sealed class ViewTest :
+		IView
 	{
-		public string Name
-		{
-			get;
-		}
-
 		public bool IsOpened
 		{
 			get;
@@ -74,21 +69,18 @@ internal sealed class PanelInfoTests
 			set;
 		}
 
-		public void Open(
-			Action onPanelOpened)
+		public void Open(Action onPanelOpened)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Close(
-			Action onPanelClosed)
+		public void Close(Action onPanelClosed)
 		{
 			throw new NotImplementedException();
 		}
 
-		public PanelTest()
+		public ViewTest()
 		{
-			Name = "test";
 			IsOpened = false;
 		}
 	}

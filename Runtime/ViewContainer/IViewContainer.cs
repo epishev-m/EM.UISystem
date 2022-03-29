@@ -1,6 +1,6 @@
 ﻿namespace EM.UI
 {
-using System;
+
 using System.Threading.Tasks;
 using IoC;
 

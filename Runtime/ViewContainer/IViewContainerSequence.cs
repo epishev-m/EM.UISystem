@@ -16,6 +16,8 @@ public interface IViewContainerSequence
 	IViewContainerComplete OnComplete(Action command);
 
 	ICommand GetCommand();
+
+	void Execute();
 }
 
 }

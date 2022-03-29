@@ -1,5 +1,6 @@
 ﻿namespace EM.UI
 {
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,12 +61,14 @@ public partial class ViewContainer :
 		if (gameObject == null)
 		{
 			assetsManager.ReleaseInstance(gameObject);
+
 			return false;
 		}
 
 		if (!gameObject.TryGetComponent((Type) key, out var viewComponent))
 		{
 			assetsManager.ReleaseInstance(gameObject);
+
 			return false;
 		}
 
@@ -83,7 +86,7 @@ public partial class ViewContainer :
 	public View GetView<T>()
 		where T : View
 	{
-		return  GetView(typeof(T));
+		return GetView(typeof(T));
 	}
 
 	public View GetView(object key)

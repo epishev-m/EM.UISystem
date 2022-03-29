@@ -16,6 +16,8 @@ public interface IViewContainerBatch
 	IViewContainerComplete OnComplete(Action command);
 
 	ICommand GetCommand();
+
+	void Execute();
 }
 
 }

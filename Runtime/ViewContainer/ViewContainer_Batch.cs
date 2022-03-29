@@ -66,6 +66,11 @@ public partial class ViewContainer
 			return root;
 		}
 
+		public void Execute()
+		{
+			root.Execute();
+		}
+
 		#endregion
 
 		#region Batch

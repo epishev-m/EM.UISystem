@@ -1,17 +1,17 @@
-﻿using EM.Foundation;
-using EM.IoC;
-
-namespace EM.UI
+﻿namespace EM.UI
 {
 
-public sealed class ViewBinding :
+using Foundation;
+using IoC;
+
+public sealed class UiBinding :
 	Binding,
-	IViewBinding,
-	IViewBindingLifeTime
+	IUiBinding,
+	IUiBindingLifeTime
 {
-	#region IViewBindingLifeTime
+	#region IUiBindingLifeTime
 
-	public IViewBinding InGlobal()
+	public IUiBinding InGlobal()
 	{
 		Requires.ValidOperation(LifeTime == LifeTime.External, this, nameof(InGlobal));
 
@@ -20,7 +20,7 @@ public sealed class ViewBinding :
 		return this;
 	}
 
-	public IViewBinding InLocal()
+	public IUiBinding InLocal()
 	{
 		Requires.ValidOperation(LifeTime == LifeTime.External, this, nameof(InLocal));
 
@@ -31,20 +31,20 @@ public sealed class ViewBinding :
 
 	#endregion
 
-	#region IViewBinding
+	#region IUiBinding
 
-	public IViewBinding To(string asset)
+	public IUiBinding To(string asset)
 	{
 		Requires.ValidOperation(LifeTime != LifeTime.External, this, nameof(To));
 
-		return base.To(asset) as IViewBinding;
+		return base.To(asset) as IUiBinding;
 	}
 
 	#endregion
 
-	#region ViewBinding
+	#region UiBinding
 
-	public ViewBinding(object key,
+	public UiBinding(object key,
 		object name,
 		Resolver resolver)
 		: base(key, name, resolver)
@@ -54,7 +54,7 @@ public sealed class ViewBinding :
 	public LifeTime LifeTime
 	{
 		get;
-		set;
+		private set;
 	} = LifeTime.External;
 
 	#endregion

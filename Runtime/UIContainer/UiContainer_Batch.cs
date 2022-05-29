@@ -1,60 +1,61 @@
 ﻿namespace EM.UI
 {
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
 
-public partial class ViewContainer
+public partial class UiContainer
 {
 	public sealed class Batch :
-		IViewContainerBatch
+		IUiContainerBatch
 	{
 		private readonly CommandSequence root;
 
 		private readonly IModalLogicController modalLogicController;
 
-		private readonly IViewContainer viewContainer;
+		private readonly IUiContainer uiContainer;
 
 		private readonly CommandBatch batch;
-		
+
 		private readonly HashSet<(Type Key, Modes Mode)> openingViews = new();
 
 		private readonly HashSet<Type> closingViews = new();
 
-		#region IViewContainerBatch
+		#region IUiContainerBatch
 
-		public IViewContainerBatch Open<T>(Modes mode = Modes.None)
-			where T : View
+		public IUiContainerBatch Open<T>(Modes mode = Modes.None)
+			where T : Panel
 		{
 			openingViews.Add((typeof(T), mode));
 
 			return this;
 		}
 
-		public IViewContainerBatch Close<T>()
-			where T : View
+		public IUiContainerBatch Close<T>()
+			where T : Panel
 		{
 			closingViews.Add(typeof(T));
 
 			return this;
 		}
 
-		public IViewContainerSequence InParallel()
+		public IUiContainerSequence InParallel()
 		{
 			CreateCommands();
-			var sequence = new Sequence(root, modalLogicController, viewContainer);
+			var sequence = new Sequence(root, modalLogicController, uiContainer);
 
 			return sequence;
 		}
 
-		public IViewContainerComplete OnComplete(Action command)
+		public IUiContainerContainer OnComplete(Action command)
 		{
 			Requires.NotNull(command, nameof(command));
 
 			CreateCommands();
 			batch.Done += command;
-			var complete = new Complete(viewContainer, modalLogicController, root);
+			var complete = new Container(uiContainer, modalLogicController, root);
 
 			return complete;
 		}
@@ -77,15 +78,15 @@ public partial class ViewContainer
 
 		public Batch(CommandSequence root,
 			IModalLogicController modalLogicController,
-			IViewContainer viewContainer)
+			IUiContainer uiContainer)
 		{
 			Requires.NotNull(root, nameof(root));
 			Requires.NotNull(modalLogicController, nameof(modalLogicController));
-			Requires.NotNull(viewContainer, nameof(viewContainer));
+			Requires.NotNull(uiContainer, nameof(uiContainer));
 
 			this.root = root;
 			this.modalLogicController = modalLogicController;
-			this.viewContainer = viewContainer;
+			this.uiContainer = uiContainer;
 			batch = new CommandBatch();
 			root.Add(batch);
 		}
@@ -100,7 +101,7 @@ public partial class ViewContainer
 
 		private void CreateCloseCommands()
 		{
-			foreach (var view in closingViews.Select(key => viewContainer.GetView(key)))
+			foreach (var view in closingViews.Select(key => uiContainer.GetPanel(key)))
 			{
 				Requires.NotNull(view, nameof(view));
 
@@ -109,7 +110,7 @@ public partial class ViewContainer
 					continue;
 				}
 
-				ICommand command = new CommandCloseView(modalLogicController, view, viewInfo.Mode);
+				ICommand command = new CommandClosePanel(modalLogicController, view, viewInfo.Mode);
 				batch.Add(command);
 			}
 		}
@@ -119,9 +120,9 @@ public partial class ViewContainer
 			foreach (var (key, mode) in openingViews)
 			{
 				var sequence = new CommandSequence();
-				ICommand command = new CommandLoadView(viewContainer, key);
+				ICommand command = new CommandLoadPanel(uiContainer, key);
 				sequence.Add(command);
-				command = new CommandOpenView(viewContainer, modalLogicController, key, mode);
+				command = new CommandOpenView(uiContainer, modalLogicController, key, mode);
 				sequence.Add(command);
 				batch.Add(sequence);
 			}

@@ -1,13 +1,14 @@
 ﻿namespace EM.UI
 {
+
 using Foundation;
 
-public sealed class CommandCloseView :
+public sealed class CommandClosePanel :
 	CommandBase
 {
 	private readonly IModalLogicController modalLogicController;
 
-	private readonly View view;
+	private readonly Panel panel;
 
 	private readonly Modes mode;
 
@@ -15,25 +16,27 @@ public sealed class CommandCloseView :
 
 	public override void Execute()
 	{
-		modalLogicController.PrepareRemove(mode, () => view.Close(() =>
-		{
-			modalLogicController.Remove(view, mode);
-			DoneInvoke();
-		}));
+		modalLogicController.PrepareRemove(mode,
+			() => panel.Close(() =>
+			{
+				modalLogicController.Remove(panel, mode);
+				DoneInvoke();
+			}));
 	}
 
 	#endregion
+
 	#region CommandOpenPanel
 
-	public CommandCloseView(IModalLogicController modalLogicController,
-		View view,
+	public CommandClosePanel(IModalLogicController modalLogicController,
+		Panel panel,
 		Modes mode)
 	{
 		Requires.NotNull(modalLogicController, nameof(modalLogicController));
-		Requires.NotNull(view, nameof(view));
-		
+		Requires.NotNull(panel, nameof(panel));
+
 		this.modalLogicController = modalLogicController;
-		this.view = view;
+		this.panel = panel;
 		this.mode = mode;
 	}
 

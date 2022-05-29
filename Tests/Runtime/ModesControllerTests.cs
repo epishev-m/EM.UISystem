@@ -78,13 +78,13 @@ internal sealed class ModalLogicControllerTests
 	public void ModalLogicController_TryGetViewInfo_Panel()
 	{
 		// Arrange
-		var expected = new ViewTest();
+		var expected = new PanelTest();
 		var modesController = new ModalLogicController();
 
 		// Act
 		modesController.Add(expected, Modes.None);
 		modesController.TryGetViewInfo(expected, out var viewInfo);
-		var actual = viewInfo.View;
+		var actual = viewInfo.Panel;
 
 		// Assert
 		Assert.AreEqual(expected, actual);
@@ -95,7 +95,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		const Modes expected = Modes.None;
-		var panel = new ViewTest();
+		var panel = new PanelTest();
 		var modesController = new ModalLogicController();
 
 		// Act
@@ -111,7 +111,7 @@ internal sealed class ModalLogicControllerTests
 	public void ModalLogicController_TryGetViewInfo_True()
 	{
 		// Arrange
-		var view = new ViewTest();
+		var view = new PanelTest();
 		var modesController = new ModalLogicController();
 
 		// Act
@@ -126,7 +126,7 @@ internal sealed class ModalLogicControllerTests
 	public void ModalLogicController_TryGetViewInfo_False()
 	{
 		// Arrange
-		var view = new ViewTest();
+		var view = new PanelTest();
 		var modesController = new ModalLogicController();
 
 		// Act
@@ -138,8 +138,8 @@ internal sealed class ModalLogicControllerTests
 
 	#region Nested
 
-	private sealed class ViewTest :
-		IView
+	private sealed class PanelTest :
+		IPanel
 	{
 		public bool IsOpened
 		{
@@ -162,7 +162,7 @@ internal sealed class ModalLogicControllerTests
 			throw new NotImplementedException();
 		}
 
-		public ViewTest()
+		public PanelTest()
 		{
 			IsOpened = false;
 		}

@@ -1,8 +1,9 @@
 ﻿namespace EM.UI
 {
+
 using System;
 
-public interface IView
+public interface IPanel
 {
 	bool IsOpened
 	{

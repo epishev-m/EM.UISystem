@@ -1,12 +1,13 @@
 ﻿namespace EM.UI
 {
+
 using System;
 using Foundation;
 
-public class CommandLoadView :
+public class CommandLoadPanel :
 	CommandBase
 {
-	private readonly IViewContainer viewContainer;
+	private readonly IUiContainer uiContainer;
 
 	private readonly Type key;
 
@@ -19,21 +20,21 @@ public class CommandLoadView :
 
 	#endregion
 
-	#region CommandLoadView
+	#region CommandLoadPanel
 
-	public CommandLoadView(IViewContainer viewContainer,
+	public CommandLoadPanel(IUiContainer uiContainer,
 		Type key)
 	{
-		Requires.NotNull(viewContainer, nameof(viewContainer));
+		Requires.NotNull(uiContainer, nameof(uiContainer));
 		Requires.NotNull(key, nameof(key));
 
-		this.viewContainer = viewContainer;
+		this.uiContainer = uiContainer;
 		this.key = key;
 	}
 
 	private async void LoadView(Action onCompleted)
 	{
-		var result = await viewContainer.Load(key);
+		var result = await uiContainer.Load(key);
 
 		Requires.ValidOperation(result, $"Failed to load {key}");
 

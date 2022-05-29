@@ -1,30 +1,31 @@
 ﻿namespace EM.UI
 {
+
 using Foundation;
 
-public sealed partial class ViewContainer
+public sealed partial class UiContainer
 {
-	public sealed class Complete :
-		IViewContainerComplete
+	public sealed class Container :
+		IUiContainerContainer
 	{
 		private readonly CommandSequence root;
 
 		private readonly IModalLogicController modalLogicController;
 
-		private readonly IViewContainer viewContainer;
+		private readonly IUiContainer uiContainer;
 
-		#region IUiSystemComplete
+		#region IUiContainerContainer
 
-		public IViewContainerSequence InSequence()
+		public IUiContainerSequence InSequence()
 		{
-			var sequence = new Sequence(root, modalLogicController, viewContainer);
+			var sequence = new Sequence(root, modalLogicController, uiContainer);
 
 			return sequence;
 		}
 
-		public IViewContainerBatch InParallel()
+		public IUiContainerBatch InParallel()
 		{
-			var batch = new Batch(root, modalLogicController, viewContainer);
+			var batch = new Batch(root, modalLogicController, uiContainer);
 
 			return batch;
 		}
@@ -40,18 +41,19 @@ public sealed partial class ViewContainer
 		}
 
 		#endregion
+
 		#region ComposerComplete
 
-		public Complete(IViewContainer viewContainer,
+		public Container(IUiContainer uiContainer,
 			IModalLogicController modalLogicController,
 			CommandSequence root)
 		{
-			Requires.NotNull(viewContainer, nameof(viewContainer));
+			Requires.NotNull(uiContainer, nameof(uiContainer));
 			Requires.NotNull(modalLogicController, nameof(modalLogicController));
 			Requires.NotNull(root, nameof(root));
 
 			this.root = root;
-			this.viewContainer = viewContainer;
+			this.uiContainer = uiContainer;
 			this.modalLogicController = modalLogicController;
 		}
 

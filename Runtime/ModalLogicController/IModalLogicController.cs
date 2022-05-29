@@ -1,10 +1,11 @@
 ﻿namespace EM.UI
 {
+
 using System;
 
 public interface IModalLogicController
 {
-	bool TryGetViewInfo(IView view,
+	bool TryGetViewInfo(IPanel panel,
 		out ViewInfo viewInfo);
 
 	void PrepareAdd(Modes mode,
@@ -13,10 +14,10 @@ public interface IModalLogicController
 	void PrepareRemove(Modes mode,
 		Action onCompleted);
 
-	void Add(IView view,
+	void Add(IPanel panel,
 		Modes mode);
 
-	void Remove(IView view,
+	void Remove(IPanel panel,
 		Modes mode);
 }
 

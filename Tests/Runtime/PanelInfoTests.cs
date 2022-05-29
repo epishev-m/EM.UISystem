@@ -28,11 +28,11 @@ internal sealed class ViewInfoTests
 	public void ViewInfo_Panel()
 	{
 		// Arrange
-		var expected = new ViewTest();
+		var expected = new PanelTest();
 
 		// Act
 		var panelInfo = new ViewInfo(expected, Modes.None);
-		var actual = panelInfo.View;
+		var actual = panelInfo.Panel;
 
 		// Assert
 		Assert.AreEqual(expected, actual);
@@ -43,7 +43,7 @@ internal sealed class ViewInfoTests
 	{
 		// Arrange
 		const Modes expected = Modes.None;
-		var panel = new ViewTest();
+		var panel = new PanelTest();
 
 		// Act
 		var panelInfo = new ViewInfo(panel, expected);
@@ -55,8 +55,8 @@ internal sealed class ViewInfoTests
 
 	#region Nested
 
-	private sealed class ViewTest :
-		IView
+	private sealed class PanelTest :
+		IPanel
 	{
 		public bool IsOpened
 		{
@@ -79,7 +79,7 @@ internal sealed class ViewInfoTests
 			throw new NotImplementedException();
 		}
 
-		public ViewTest()
+		public PanelTest()
 		{
 			IsOpened = false;
 		}

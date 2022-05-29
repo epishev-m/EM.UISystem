@@ -1,14 +1,15 @@
 ﻿namespace EM.UI
 {
+
 using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Canvas), typeof(CanvasGroup))]
-public abstract class View :
+public abstract class Panel :
 	MonoBehaviour,
-	IView
+	IPanel
 {
-	[Header(nameof(View))]
+	[Header(nameof(Panel))]
 
 	[SerializeField]
 	private Canvas canvas;
@@ -18,7 +19,7 @@ public abstract class View :
 
 	private bool isInitialized;
 
-	#region IView
+	#region IPanel
 
 	public bool IsOpened => canvas.enabled;
 
@@ -35,7 +36,6 @@ public abstract class View :
 
 		if (canvas.enabled == false)
 		{
-			
 			canvas.enabled = true;
 			canvasGroup.blocksRaycasts = true;
 		}
@@ -77,7 +77,7 @@ public abstract class View :
 
 	#endregion
 
-	#region View
+	#region Panel
 
 	private void Initialize()
 	{

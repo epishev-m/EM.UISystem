@@ -1,12 +1,13 @@
 ﻿namespace EM.UI
 {
+
 using System;
 using Foundation;
 
 public sealed class CommandOpenView
 	: CommandBase
 {
-	private readonly IViewContainer viewContainer;
+	private readonly IUiContainer uiContainer;
 
 	private readonly IModalLogicController modalLogicController;
 
@@ -18,7 +19,7 @@ public sealed class CommandOpenView
 
 	public override void Execute()
 	{
-		var view = viewContainer.GetView(key);
+		var view = uiContainer.GetPanel(key);
 
 		modalLogicController.PrepareAdd(mode,
 			() => view.Open(() =>
@@ -32,16 +33,16 @@ public sealed class CommandOpenView
 
 	#region CommandOpenView
 
-	public CommandOpenView(IViewContainer viewContainer,
+	public CommandOpenView(IUiContainer uiContainer,
 		IModalLogicController modalLogicController,
 		Type key,
 		Modes mode)
 	{
-		Requires.NotNull(viewContainer, nameof(viewContainer));
+		Requires.NotNull(uiContainer, nameof(uiContainer));
 		Requires.NotNull(modalLogicController, nameof(modalLogicController));
 		Requires.NotNull(key, nameof(key));
 
-		this.viewContainer = viewContainer;
+		this.uiContainer = uiContainer;
 		this.modalLogicController = modalLogicController;
 		this.key = key;
 		this.mode = mode;

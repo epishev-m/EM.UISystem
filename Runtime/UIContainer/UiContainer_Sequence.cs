@@ -1,39 +1,40 @@
 ﻿namespace EM.UI
 {
+
 using System;
 using Foundation;
 
-public partial class ViewContainer
+public partial class UiContainer
 {
 	public sealed class Sequence :
-		IViewContainerSequence
+		IUiContainerSequence
 	{
 		private readonly CommandSequence root;
 
 		private readonly IModalLogicController modalLogicController;
 
-		private readonly IViewContainer viewContainer;
+		private readonly IUiContainer uiContainer;
 
 		private readonly CommandSequence sequence;
 
-		#region IViewContainerSequence
+		#region IUiContainerSequence
 
-		public IViewContainerSequence Open<T>(Modes mode = Modes.None)
-			where T : View
+		public IUiContainerSequence Open<T>(Modes mode = Modes.None)
+			where T : Panel
 		{
 			var key = typeof(T);
-			ICommand command = new CommandLoadView(viewContainer, key);
+			ICommand command = new CommandLoadPanel(uiContainer, key);
 			sequence.Add(command);
-			command = new CommandOpenView(viewContainer, modalLogicController, key, mode);
+			command = new CommandOpenView(uiContainer, modalLogicController, key, mode);
 			sequence.Add(command);
 
 			return this;
 		}
 
-		public IViewContainerSequence Close<T>()
-			where T : View
+		public IUiContainerSequence Close<T>()
+			where T : Panel
 		{
-			var view = viewContainer.GetView<T>();
+			var view = uiContainer.GetPanel<T>();
 			Requires.NotNull(view, nameof(view));
 
 			if (modalLogicController.TryGetViewInfo(view, out var viewInfo) == false)
@@ -41,25 +42,25 @@ public partial class ViewContainer
 				return this;
 			}
 
-			ICommand command = new CommandCloseView(modalLogicController, view, viewInfo.Mode);
+			ICommand command = new CommandClosePanel(modalLogicController, view, viewInfo.Mode);
 			sequence.Add(command);
 
 			return this;
 		}
 
-		public IViewContainerBatch InParallel()
+		public IUiContainerBatch InParallel()
 		{
-			var batch = new Batch(root, modalLogicController, viewContainer);
+			var batch = new Batch(root, modalLogicController, uiContainer);
 
 			return batch;
 		}
 
-		public IViewContainerComplete OnComplete(Action command)
+		public IUiContainerContainer OnComplete(Action command)
 		{
 			Requires.NotNull(command, nameof(command));
 
 			sequence.Done += command;
-			var complete = new Complete(viewContainer, modalLogicController, root);
+			var complete = new Container(uiContainer, modalLogicController, root);
 
 			return complete;
 		}
@@ -80,15 +81,15 @@ public partial class ViewContainer
 
 		public Sequence(CommandSequence root,
 			IModalLogicController modalLogicController,
-			IViewContainer viewContainer)
+			IUiContainer uiContainer)
 		{
 			Requires.NotNull(root, nameof(root));
 			Requires.NotNull(modalLogicController, nameof(modalLogicController));
-			Requires.NotNull(viewContainer, nameof(viewContainer));
+			Requires.NotNull(uiContainer, nameof(uiContainer));
 
 			this.root = root;
 			this.modalLogicController = modalLogicController;
-			this.viewContainer = viewContainer;
+			this.uiContainer = uiContainer;
 			sequence = new CommandSequence();
 			root.Add(sequence);
 		}

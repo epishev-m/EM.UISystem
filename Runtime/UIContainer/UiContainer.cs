@@ -9,9 +9,9 @@ using Foundation;
 using IoC;
 using UnityEngine;
 
-public partial class ViewContainer :
+public partial class UiContainer :
 	Binder,
-	IViewContainer
+	IUiContainer
 {
 	private readonly string rootAsset;
 
@@ -21,21 +21,21 @@ public partial class ViewContainer :
 
 	private readonly IModalLogicController modalLogicController = new ModalLogicController();
 
-	private readonly Dictionary<object, View> views = new();
+	private readonly Dictionary<object, Panel> panels = new();
 
 	private Transform uiRoot;
 
-	#region ViewContainer
+	#region IUiContainer
 
 	public Task<bool> Load<T>()
-		where T : View
+		where T : Panel
 	{
 		return Load(typeof(T));
 	}
 
 	public async Task<bool> Load(object key)
 	{
-		if (views.ContainsKey(key))
+		if (panels.ContainsKey(key))
 		{
 			return true;
 		}
@@ -60,50 +60,48 @@ public partial class ViewContainer :
 
 		if (gameObject == null)
 		{
-			assetsManager.ReleaseInstance(gameObject);
-
 			return false;
 		}
 
-		if (!gameObject.TryGetComponent((Type) key, out var viewComponent))
+		if (!gameObject.TryGetComponent((Type) key, out var panelComponent))
 		{
 			assetsManager.ReleaseInstance(gameObject);
 
 			return false;
 		}
 
-		Requires.ValidOperation(viewComponent is View,
-			$"The supplied type {viewComponent.GetType()} " +
-			$"is not a given type {typeof(View)}. Only given type are supported.");
+		Requires.ValidOperation(panelComponent is Panel,
+			$"The supplied type {panelComponent.GetType()} " +
+			$"is not a given type {typeof(Panel)}. Only given type are supported.");
 
-		var view = (View) viewComponent;
-		container.Inject(view);
-		views.Add(key, view);
+		var panel = (Panel) panelComponent;
+		container.Inject(panel);
+		panels.Add(key, panel);
 
 		return true;
 	}
 
-	public View GetView<T>()
-		where T : View
+	public Panel GetPanel<T>()
+		where T : Panel
 	{
-		return GetView(typeof(T));
+		return GetPanel(typeof(T));
 	}
 
-	public View GetView(object key)
+	public Panel GetPanel(object key)
 	{
-		views.TryGetValue(key, out var result);
+		panels.TryGetValue(key, out var result);
 
 		return result;
 	}
 
-	public IViewBindingLifeTime Bind<T>()
-		where T : View
+	public IUiBindingLifeTime Bind<T>()
+		where T : Panel
 	{
-		return base.Bind<T>() as IViewBindingLifeTime;
+		return base.Bind<T>() as IUiBindingLifeTime;
 	}
 
 	public bool Unbind<T>()
-		where T : View
+		where T : Panel
 	{
 		var binding = GetBinding(typeof(T));
 		var result = Unbind(binding);
@@ -113,7 +111,7 @@ public partial class ViewContainer :
 
 	public void Unbind(LifeTime lifeTime)
 	{
-		var bindingsList = bindings.Select(keyValuePair => (ViewBinding) keyValuePair.Value)
+		var bindingsList = bindings.Select(keyValuePair => (UiBinding) keyValuePair.Value)
 			.Where(viewBinding => viewBinding.LifeTime == lifeTime);
 
 		foreach (var viewBinding in bindingsList)
@@ -122,7 +120,7 @@ public partial class ViewContainer :
 		}
 	}
 
-	public IViewContainerBatch InParallel()
+	public IUiContainerBatch InParallel()
 	{
 		var root = new CommandSequence();
 		var batch = new Batch(root, modalLogicController, this);
@@ -130,7 +128,7 @@ public partial class ViewContainer :
 		return batch;
 	}
 
-	public IViewContainerSequence InSequence()
+	public IUiContainerSequence InSequence()
 	{
 		var root = new CommandSequence();
 		var sequence = new Sequence(root, modalLogicController, this);
@@ -145,14 +143,14 @@ public partial class ViewContainer :
 	protected override IBinding GetRawBinding(object key,
 		object name)
 	{
-		return new ViewBinding(key, name, BindingResolver);
+		return new UiBinding(key, name, BindingResolver);
 	}
 
 	#endregion
 
 	#region UiContainer
 
-	public ViewContainer(string rootAsset,
+	public UiContainer(string rootAsset,
 		IDiContainer container,
 		IAssetsManager assetsManager)
 	{
@@ -180,18 +178,18 @@ public partial class ViewContainer :
 
 	private bool Unbind(IBinding binding)
 	{
-		if (!views.TryGetValue((Type) binding.Key, out var view))
+		if (!panels.Remove((Type) binding.Key, out var panel))
 		{
 			return false;
 		}
 
-		//TODO Requires.ValidOperation(view.IsOpened == false, "");
-		if (!view.IsOpened)
+		//TODO Requires.ValidOperation(panel.IsOpened == false, "");
+		if (!panel.IsOpened)
 		{
 			return false;
 		}
 
-		assetsManager.ReleaseInstance(view.gameObject);
+		assetsManager.ReleaseInstance(panel.gameObject);
 
 		return base.Unbind(binding.Key);
 	}

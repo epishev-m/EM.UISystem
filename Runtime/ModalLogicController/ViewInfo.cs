@@ -1,19 +1,20 @@
 ﻿namespace EM.UI
 {
+
 using Foundation;
 
 public sealed class ViewInfo
 {
-	public readonly IView View;
+	public readonly IPanel Panel;
 
 	public readonly Modes Mode;
-	
-	public ViewInfo(IView view,
+
+	public ViewInfo(IPanel panel,
 		Modes mode)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
-		View = view;
+		Panel = panel;
 		Mode = mode;
 	}
 }

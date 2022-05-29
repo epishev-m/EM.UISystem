@@ -1,5 +1,6 @@
 ﻿namespace EM.UI
 {
+
 using Foundation;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ public sealed class ModalLogicController :
 
 	#region IModalLogicController
 
-	public bool TryGetViewInfo(IView view,
+	public bool TryGetViewInfo(IPanel panel,
 		out ViewInfo viewInfo)
 	{
 		var result = false;
 
-		if (view != null)
+		if (panel != null)
 		{
-			viewInfo = openViews.Find(info => info.View == view);
+			viewInfo = openViews.Find(info => info.Panel == panel);
 			result = viewInfo != null;
 		}
 		else
@@ -41,45 +42,45 @@ public sealed class ModalLogicController :
 		onCompleted?.Invoke();
 	}
 
-	public void Add(IView view,
+	public void Add(IPanel panel,
 		Modes mode)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
 		if (mode == Modes.Modal)
 		{
-			AddModal(view);
+			AddModal(panel);
 		}
 		else
 		{
-			Add(view);
+			Add(panel);
 		}
 	}
 
-	public void Remove(IView view,
+	public void Remove(IPanel panel,
 		Modes mode)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
 		if (mode == Modes.Modal)
 		{
-			RemoveModal(view);
+			RemoveModal(panel);
 		}
 		else
 		{
-			Remove(view);
+			Remove(panel);
 		}
 	}
 
 	#endregion
-	
+
 	#region ModalLogicController
 
-	private void Add(IView view)
+	private void Add(IPanel panel)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
-		var panelInfo = openViews.Find(info => info.View == view);
+		var panelInfo = openViews.Find(info => info.Panel == panel);
 
 		if (panelInfo != null)
 		{
@@ -88,37 +89,37 @@ public sealed class ModalLogicController :
 		}
 		else
 		{
-			panelInfo = new ViewInfo(view, Modes.None);
+			panelInfo = new ViewInfo(panel, Modes.None);
 			openViews.Add(panelInfo);
 		}
 	}
 
-	private void AddModal(IView view)
+	private void AddModal(IPanel panel)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
-		var viewInfo = openViews.Find(info => info.View == view);
+		var viewInfo = openViews.Find(info => info.Panel == panel);
 
 		if (viewInfo != null)
 		{
 			openViews.Remove(viewInfo);
 		}
 
-		viewInfo = new ViewInfo(view, Modes.Modal);
+		viewInfo = new ViewInfo(panel, Modes.Modal);
 
 		foreach (var info in openViews)
 		{
-			info.View.IsInteractable = false;
+			info.Panel.IsInteractable = false;
 		}
 
 		openViews.Add(viewInfo);
 	}
 
-	private void Remove(IView view)
+	private void Remove(IPanel panel)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
-		var index = openViews.FindIndex(info => info.View == view);
+		var index = openViews.FindIndex(info => info.Panel == panel);
 
 		if (index >= 0)
 		{
@@ -126,11 +127,11 @@ public sealed class ModalLogicController :
 		}
 	}
 
-	private void RemoveModal(IView view)
+	private void RemoveModal(IPanel panel)
 	{
-		Requires.NotNull(view, nameof(view));
+		Requires.NotNull(panel, nameof(panel));
 
-		var index = openViews.FindIndex(info => info.View == view);
+		var index = openViews.FindIndex(info => info.Panel == panel);
 
 		if (index < 0)
 		{
@@ -141,7 +142,7 @@ public sealed class ModalLogicController :
 
 		foreach (var viewInfo in openViews)
 		{
-			viewInfo.View.IsInteractable = true;
+			viewInfo.Panel.IsInteractable = true;
 
 			if (viewInfo.Mode == Modes.Modal)
 			{

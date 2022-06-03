@@ -1,10 +1,7 @@
 {
-    "name": "EM.UISystem.Tests",
+    "name": "EM.UI.Editor.Tests",
     "rootNamespace": "",
-    "references": [
-        "EM.UISystem",
-        "EM.Foundation"
-    ],
+    "references": [],
     "includePlatforms": [
         "Editor"
     ],

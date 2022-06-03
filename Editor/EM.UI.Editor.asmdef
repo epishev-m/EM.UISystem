@@ -1,13 +1,10 @@
 {
-    "name": "EM.UISystem",
+    "name": "EM.UI.Editor",
     "rootNamespace": "",
-    "references": [
-        "EM.Foundation",
-        "EM.IoC",
-        "Unity.Addressables",
-        "Unity.ResourceManager"
+    "references": [],
+    "includePlatforms": [
+        "Editor"
     ],
-    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

@@ -1,9 +1,13 @@
 {
-    "name": "EM.UISystem.Editor.Tests",
-    "references": [],
-    "includePlatforms": [
-        "Editor"
+    "name": "EM.UI",
+    "rootNamespace": "",
+    "references": [
+        "EM.Foundation",
+        "EM.IoC",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

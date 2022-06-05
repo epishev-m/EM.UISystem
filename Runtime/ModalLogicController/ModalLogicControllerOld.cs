@@ -5,7 +5,7 @@ using Foundation;
 using System;
 using System.Collections.Generic;
 
-public sealed class ModalLogicController :
+public sealed class ModalLogicControllerOld :
 	IModalLogicController
 {
 	private readonly List<ViewInfo> openViews = new(16);

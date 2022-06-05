@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
 using IoC;
@@ -19,7 +20,7 @@ public partial class UiContainer :
 
 	private readonly IAssetsManager assetsManager;
 
-	private readonly IModalLogicController modalLogicController = new ModalLogicController();
+	private readonly IModalLogicController modalLogicController = new ModalLogicControllerOld();
 
 	private readonly Dictionary<object, Panel> panels = new();
 
@@ -56,7 +57,7 @@ public partial class UiContainer :
 
 		var root = await GetUiRoot();
 		var assetPath = (string) valuesArray.First();
-		var gameObject = await assetsManager.InstantiateAsync(assetPath, root);
+		var gameObject = await assetsManager.InstantiateAsync(assetPath, root, new CancellationToken());
 
 		if (gameObject == null)
 		{
@@ -170,7 +171,7 @@ public partial class UiContainer :
 			return uiRoot;
 		}
 
-		uiRoot = await assetsManager.InstantiateAsync<Transform>(rootAsset);
+		uiRoot = await assetsManager.InstantiateAsync<Transform>(rootAsset, new CancellationToken());
 		UnityEngine.Object.DontDestroyOnLoad(uiRoot);
 
 		return uiRoot;

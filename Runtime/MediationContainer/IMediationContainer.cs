@@ -1,7 +1,7 @@
 ﻿namespace EM.UI
 {
 
-using IoC;
+using Foundation;
 
 public interface IMediationContainer
 {

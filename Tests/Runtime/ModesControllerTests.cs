@@ -9,7 +9,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		try
@@ -30,7 +30,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		try
@@ -51,7 +51,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		modesController.PrepareAdd(Modes.None, () => actual = true);
@@ -65,7 +65,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var actual = false;
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		modesController.PrepareRemove(Modes.None, () => actual = true);
@@ -79,7 +79,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var expected = new PanelTest();
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		modesController.Add(expected, Modes.None);
@@ -96,7 +96,7 @@ internal sealed class ModalLogicControllerTests
 		// Arrange
 		const Modes expected = Modes.None;
 		var panel = new PanelTest();
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		modesController.Add(panel, expected);
@@ -112,7 +112,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var view = new PanelTest();
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		modesController.Add(view, Modes.None);
@@ -127,7 +127,7 @@ internal sealed class ModalLogicControllerTests
 	{
 		// Arrange
 		var view = new PanelTest();
-		var modesController = new ModalLogicController();
+		var modesController = new ModalLogicControllerOld();
 
 		// Act
 		var actual = modesController.TryGetViewInfo(view, out _);

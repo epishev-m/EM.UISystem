@@ -3,10 +3,11 @@
 
 using Foundation;
 
-public abstract class Mediator :
+public abstract class Mediator<T> :
 	IMediator
+	where T : class, IView
 {
-	private IView View;
+	protected T View;
 
 	#region IMediator
 
@@ -14,8 +15,9 @@ public abstract class Mediator :
 	{
 		Requires.NotNull(view, nameof(view));
 		Requires.ValidOperation(View == null, nameof(view));
+		Requires.Type<T>(view, nameof(view));
 
-		View = view;
+		View = (T) view;
 	}
 
 	public virtual void Release()

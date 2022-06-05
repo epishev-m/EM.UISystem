@@ -38,7 +38,7 @@ public sealed class MediationBinding :
 	{
 		Requires.ValidOperation(LifeTime != LifeTime.External, this, nameof(To));
 
-		base.To<T> ();
+		base.To<T>();
 	}
 
 	#endregion

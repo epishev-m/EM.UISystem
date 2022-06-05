@@ -4,11 +4,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
+using UnityEngine;
 
 public abstract class View :
+	MonoBehaviour,
 	IView
 {
-	private readonly List<IView> children = new();
+	private readonly List<IView> _children = new();
 
 	#region IView
 
@@ -17,15 +19,15 @@ public abstract class View :
 		get;
 	}
 
-	public IEnumerable<IView> Children => children;
+	public IEnumerable<IView> Children => _children;
 
 	public void AddView(IView view)
 	{
 		Requires.NotNull(view, nameof(view));
 
-		if (children.Any(v => v == view))
+		if (_children.Any(v => v == view))
 		{
-			children.Add(view);
+			_children.Add(view);
 		}
 	}
 
@@ -33,7 +35,7 @@ public abstract class View :
 	{
 		Requires.NotNull(view, nameof(view));
 
-		children.Remove(view);
+		_children.Remove(view);
 	}
 
 	#endregion

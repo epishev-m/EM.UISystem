@@ -11,9 +11,9 @@ public sealed class MediationContainer :
 	Binder,
 	IMediationContainer
 {
-	private readonly IDiContainer container;
+	private readonly IDiContainer _container;
 
-	private readonly Dictionary<IView, IMediator> mediators = new();
+	private readonly Dictionary<IView, IMediator> _mediators = new();
 
 	#region IMediationContainer
 
@@ -69,7 +69,7 @@ public sealed class MediationContainer :
 	{
 		Requires.NotNull(container, nameof(container));
 
-		this.container = container;
+		_container = container;
 	}
 
 	private void TriggerInternal(MediationTrigger trigger,
@@ -96,7 +96,7 @@ public sealed class MediationContainer :
 
 	private void Initialise(IView view)
 	{
-		if (mediators.TryGetValue(view, out var mediator))
+		if (_mediators.TryGetValue(view, out var mediator))
 		{
 			return;
 		}
@@ -116,7 +116,7 @@ public sealed class MediationContainer :
 		}
 
 		var type = (Type) values.First();
-		mediator = (IMediator) container.GetInstance(type);
+		mediator = (IMediator) _container.GetInstance(type);
 
 		if (mediator == null)
 		{
@@ -130,12 +130,12 @@ public sealed class MediationContainer :
 			mediator.Enable();
 		}
 
-		mediators.Add(view, mediator);
+		_mediators.Add(view, mediator);
 	}
 
 	private void Release(IView view)
 	{
-		if (mediators.Remove(view, out var mediator))
+		if (_mediators.Remove(view, out var mediator))
 		{
 			mediator.Release();
 		}
@@ -143,7 +143,7 @@ public sealed class MediationContainer :
 
 	private void Enable(IView view)
 	{
-		if (mediators.TryGetValue(view, out var mediator))
+		if (_mediators.TryGetValue(view, out var mediator))
 		{
 			mediator.Enable();
 		}
@@ -151,7 +151,7 @@ public sealed class MediationContainer :
 
 	private void Disable(IView view)
 	{
-		if (mediators.TryGetValue(view, out var mediator))
+		if (_mediators.TryGetValue(view, out var mediator))
 		{
 			mediator.Disable();
 		}

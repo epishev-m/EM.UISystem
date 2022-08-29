@@ -15,48 +15,48 @@ using Object = UnityEngine.Object;
 public sealed class UiRoot :
 	IUiRoot
 {
-	private readonly Dictionary<Type, List<PanelView>> viewPanels = new();
+	private readonly Dictionary<Type, List<PanelView>> _viewPanels = new();
 
-	private readonly Dictionary<Type, LifeTime> lifeTimeInfoList = new();
+	private readonly Dictionary<Type, LifeTime> _lifeTimeInfoList = new();
 
-	private readonly IAssetsManager assetsManager;
+	private readonly IAssetsManager _assetsManager;
 
-	private Transform rootTransform;
+	private Transform _rootTransform;
 
 	#region IUiRoot
 
 	public async UniTask CreateRootTransform(string assetId,
 		CancellationToken ct)
 	{
-		Requires.ValidOperation(rootTransform == null, this, nameof(CreateRootTransform));
+		Requires.ValidOperation(_rootTransform == null, this, nameof(CreateRootTransform));
 
-		rootTransform = await assetsManager.InstantiateAsync<Transform>(assetId, ct);
-		Object.DontDestroyOnLoad(rootTransform);
+		_rootTransform = await _assetsManager.InstantiateAsync<Transform>(assetId, ct);
+		Object.DontDestroyOnLoad(_rootTransform);
 	}
 
 	public async UniTask LoadPanelViewAsync<T>(CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(rootTransform != null, this, nameof(LoadPanelViewAsync));
+		Requires.ValidOperation(_rootTransform != null, this, nameof(LoadPanelViewAsync));
 
 		var type = typeof(T);
 
 		if (type.GetCustomAttribute(typeof(AssetAttribute)) is AssetAttribute attribute)
 		{
-			var panelView = await assetsManager.InstantiateAsync<T>(attribute.Id, rootTransform, ct);
+			var panelView = await _assetsManager.InstantiateAsync<T>(attribute.Id, _rootTransform, ct);
 			PutObject<T>(panelView, attribute.LifeTime);
 		}
 	}
 
 	public void UnloadPanelView(LifeTime lifeTime)
 	{
-		var targetList = lifeTimeInfoList.Where(pair => pair.Value == lifeTime).ToArray();
+		var targetList = _lifeTimeInfoList.Where(pair => pair.Value == lifeTime).ToArray();
 
 		foreach (var (key, _) in targetList)
 		{
-			if (!viewPanels.Remove(key, out var panelsViewsList))
+			if (!_viewPanels.Remove(key, out var panelsViewsList))
 			{
-				lifeTimeInfoList.Remove(key);
+				_lifeTimeInfoList.Remove(key);
 
 				continue;
 			}
@@ -77,24 +77,24 @@ public sealed class UiRoot :
 					continue;
 				}
 
-				assetsManager.ReleaseInstance(panelView.gameObject);
+				_assetsManager.ReleaseInstance(panelView.gameObject);
 			}
 
 			if (openedPanelsViews.Any())
 			{
-				viewPanels.Add(key, openedPanelsViews);
+				_viewPanels.Add(key, openedPanelsViews);
 
 				continue;
 			}
 
-			lifeTimeInfoList.Remove(key);
+			_lifeTimeInfoList.Remove(key);
 		}
 	}
 
 	public async UniTask<PanelView> GetPanelViewAsync<T>(CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(rootTransform != null, this, nameof(GetPanelViewAsync));
+		Requires.ValidOperation(_rootTransform != null, this, nameof(GetPanelViewAsync));
 
 		var panelView = GetObject<T>();
 
@@ -115,12 +115,12 @@ public sealed class UiRoot :
 
 	public UiRoot(IAssetsManager assetsManager)
 	{
-		this.assetsManager = assetsManager;
+		_assetsManager = assetsManager;
 	}
 
 	private PanelView GetObject<T>()
 	{
-		if (!viewPanels.TryGetValue(typeof(T), out var list))
+		if (!_viewPanels.TryGetValue(typeof(T), out var list))
 		{
 			return null;
 		}
@@ -136,11 +136,11 @@ public sealed class UiRoot :
 	{
 		var key = typeof(T);
 
-		if (!viewPanels.TryGetValue(key, out var list))
+		if (!_viewPanels.TryGetValue(key, out var list))
 		{
 			list = new List<PanelView>(4);
-			viewPanels.Add(key, list);
-			lifeTimeInfoList.Add(key, lifeTime);
+			_viewPanels.Add(key, list);
+			_lifeTimeInfoList.Add(key, lifeTime);
 		}
 
 		list.Add(panelView);

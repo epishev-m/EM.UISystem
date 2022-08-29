@@ -76,7 +76,7 @@ public partial class UiContainer :
 			$"is not a given type {typeof(Panel)}. Only given type are supported.");
 
 		var panel = (Panel) panelComponent;
-		container.Inject(panel);
+		//container.Inject(panel);
 		panels.Add(key, panel);
 
 		return true;

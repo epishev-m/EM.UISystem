@@ -5,8 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public abstract class PanelView :
-	View
+public abstract class PanelView : View
 {
 	[Header(nameof(PanelView))]
 

@@ -7,8 +7,7 @@ using System.Linq;
 using Foundation;
 using IoC;
 
-public sealed class MediationContainer :
-	Binder,
+public sealed class MediationContainer : Binder,
 	IMediationContainer
 {
 	private readonly IDiContainer _container;

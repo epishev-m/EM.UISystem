@@ -3,8 +3,7 @@
 
 using Foundation;
 
-public abstract class Mediator<T> :
-	IMediator
+public abstract class Mediator<T> : IMediator
 	where T : class, IView
 {
 	protected T View;
@@ -14,7 +13,7 @@ public abstract class Mediator<T> :
 	public virtual void Initialize(IView view)
 	{
 		Requires.NotNull(view, nameof(view));
-		Requires.ValidOperation(View == null, nameof(view));
+		Requires.ValidOperation(View == null, this, nameof(Initialize));
 		Requires.Type<T>(view, nameof(view));
 
 		View = (T) view;

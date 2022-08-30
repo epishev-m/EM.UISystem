@@ -7,14 +7,14 @@ using Foundation;
 
 public class ModalLogicController
 {
-	private readonly List<PanelViewInfo> openPanelsViews = new(16);
+	private readonly List<PanelViewInfo> _openPanelsViews = new(16);
 
 	#region ModalLogicController
 
 	public bool TryGetPanelView<T>(out PanelView panelView)
 		where T : PanelView
 	{
-		var panelViewInfo = openPanelsViews.LastOrDefault(pv => pv.PanelView as T);
+		var panelViewInfo = _openPanelsViews.LastOrDefault(pv => pv.PanelView as T);
 		panelView = panelViewInfo?.PanelView;
 
 		return panelViewInfo != null;
@@ -39,7 +39,7 @@ public class ModalLogicController
 	{
 		Requires.NotNull(panel, nameof(panel));
 
-		var panelInfo = openPanelsViews.Find(info => info.PanelView == panel);
+		var panelInfo = _openPanelsViews.Find(info => info.PanelView == panel);
 
 		if (panelInfo.Mode == Modes.Modal)
 		{
@@ -55,17 +55,17 @@ public class ModalLogicController
 	{
 		Requires.NotNull(panel, nameof(panel));
 
-		var panelInfo = openPanelsViews.Find(info => info.PanelView == panel);
+		var panelInfo = _openPanelsViews.Find(info => info.PanelView == panel);
 
 		if (panelInfo != null)
 		{
-			openPanelsViews.Remove(panelInfo);
-			openPanelsViews.Add(panelInfo);
+			_openPanelsViews.Remove(panelInfo);
+			_openPanelsViews.Add(panelInfo);
 		}
 		else
 		{
 			panelInfo = new PanelViewInfo(panel, Modes.None);
-			openPanelsViews.Add(panelInfo);
+			_openPanelsViews.Add(panelInfo);
 		}
 	}
 
@@ -73,40 +73,40 @@ public class ModalLogicController
 	{
 		Requires.NotNull(panel, nameof(panel));
 
-		var viewInfo = openPanelsViews.Find(info => info.PanelView == panel);
+		var viewInfo = _openPanelsViews.Find(info => info.PanelView == panel);
 
 		if (viewInfo != null)
 		{
-			openPanelsViews.Remove(viewInfo);
+			_openPanelsViews.Remove(viewInfo);
 		}
 
 		viewInfo = new PanelViewInfo(panel, Modes.Modal);
 
-		foreach (var info in openPanelsViews)
+		foreach (var info in _openPanelsViews)
 		{
 			info.PanelView.IsInteractable = false;
 		}
 
-		openPanelsViews.Add(viewInfo);
+		_openPanelsViews.Add(viewInfo);
 	}
 
 	private void Remove(PanelViewInfo panelViewInfo)
 	{
 		Requires.NotNull(panelViewInfo, nameof(panelViewInfo));
 
-		openPanelsViews.Remove(panelViewInfo);
+		_openPanelsViews.Remove(panelViewInfo);
 	}
 
 	private void RemoveModal(PanelViewInfo panelViewInfo)
 	{
 		Requires.NotNull(panelViewInfo, nameof(panelViewInfo));
 
-		if (!openPanelsViews.Remove(panelViewInfo))
+		if (!_openPanelsViews.Remove(panelViewInfo))
 		{
 			return;
 		}
 
-		foreach (var viewInfo in openPanelsViews)
+		foreach (var viewInfo in _openPanelsViews)
 		{
 			viewInfo.PanelView.IsInteractable = true;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using EM.UI;
 using NUnit.Framework;
+using UnityEngine;
 
 internal sealed class ViewInfoTests
 {
@@ -13,7 +14,7 @@ internal sealed class ViewInfoTests
 		// Act
 		try
 		{
-			var unused = new ViewInfo(null, Modes.None);
+			var unused = new PanelViewInfo(null, Modes.None);
 		}
 		catch (ArgumentNullException)
 		{
@@ -28,11 +29,12 @@ internal sealed class ViewInfoTests
 	public void ViewInfo_Panel()
 	{
 		// Arrange
-		var expected = new PanelTest();
+		var gameObject = new GameObject(); 
+		var expected = gameObject.AddComponent<PanelViewTest>();
 
 		// Act
-		var panelInfo = new ViewInfo(expected, Modes.None);
-		var actual = panelInfo.Panel;
+		var panelInfo = new PanelViewInfo(expected, Modes.None);
+		var actual = panelInfo.PanelView;
 
 		// Assert
 		Assert.AreEqual(expected, actual);
@@ -43,10 +45,11 @@ internal sealed class ViewInfoTests
 	{
 		// Arrange
 		const Modes expected = Modes.None;
-		var panel = new PanelTest();
+		var gameObject = new GameObject(); 
+		var panelView = gameObject.AddComponent<PanelViewTest>();
 
 		// Act
-		var panelInfo = new ViewInfo(panel, expected);
+		var panelInfo = new PanelViewInfo(panelView, expected);
 		var actual = panelInfo.Mode;
 
 		// Assert
@@ -55,34 +58,8 @@ internal sealed class ViewInfoTests
 
 	#region Nested
 
-	private sealed class PanelTest :
-		IPanel
+	private sealed class PanelViewTest : PanelView
 	{
-		public bool IsOpened
-		{
-			get;
-		}
-
-		public bool IsInteractable
-		{
-			get;
-			set;
-		}
-
-		public void Open(Action onPanelOpened)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Close(Action onPanelClosed)
-		{
-			throw new NotImplementedException();
-		}
-
-		public PanelTest()
-		{
-			IsOpened = false;
-		}
 	}
 
 	#endregion

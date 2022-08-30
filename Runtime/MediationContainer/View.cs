@@ -6,8 +6,7 @@ using System.Linq;
 using Foundation;
 using UnityEngine;
 
-public abstract class View :
-	MonoBehaviour,
+public abstract class View : MonoBehaviour,
 	IView
 {
 	private readonly List<IView> _children = new();

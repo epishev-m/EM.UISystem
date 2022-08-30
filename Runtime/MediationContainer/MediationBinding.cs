@@ -2,10 +2,8 @@
 {
 
 using Foundation;
-using IoC;
 
-public sealed class MediationBinding :
-	Binding,
+public sealed class MediationBinding : Binding,
 	IMediationBinding,
 	IMediationBindingLifeTime
 {

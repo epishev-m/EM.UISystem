@@ -8,12 +8,10 @@ using System.Reflection;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
-using IoC;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public sealed class UiRoot :
-	IUiRoot
+public sealed class UiRoot : IUiRoot
 {
 	private readonly Dictionary<Type, List<PanelView>> _viewPanels = new();
 

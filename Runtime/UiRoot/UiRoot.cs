@@ -29,7 +29,12 @@ public sealed class UiRoot : IUiRoot
 		Requires.ValidOperation(_rootTransform == null, this, nameof(CreateRootTransform));
 
 		_rootTransform = await _assetsManager.InstantiateAsync<Transform>(assetId, ct);
-		Object.DontDestroyOnLoad(_rootTransform);
+
+		//The condition is necessary for the correct operation of unit tests
+		if (Application.isPlaying)
+		{
+			Object.DontDestroyOnLoad(_rootTransform);
+		}
 	}
 
 	public async UniTask LoadPanelViewAsync<T>(CancellationToken ct)
@@ -113,6 +118,8 @@ public sealed class UiRoot : IUiRoot
 
 	public UiRoot(IAssetsManager assetsManager)
 	{
+		Requires.NotNull(assetsManager, nameof(assetsManager));
+
 		_assetsManager = assetsManager;
 	}
 

@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "EM.Foundation",
-        "EM.UI"
+        "EM.UI",
+        "UniTask"
     ],
     "includePlatforms": [
         "Editor"

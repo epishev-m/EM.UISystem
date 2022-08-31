@@ -15,6 +15,8 @@ public class AssetAttribute : Attribute
 	public AssetAttribute(string id,
 		LifeTime lifeTime)
 	{
+		Requires.ValidArgument(!string.IsNullOrWhiteSpace(id), nameof(id));
+
 		Id = id;
 		LifeTime = lifeTime;
 	}

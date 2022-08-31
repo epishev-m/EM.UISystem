@@ -3,7 +3,7 @@ using EM.UI;
 using NUnit.Framework;
 using UnityEngine;
 
-internal sealed class ViewInfoTests
+internal sealed class PanelViewInfoTests
 {
 	[Test]
 	public void ViewInfo_Constructor_Exception()

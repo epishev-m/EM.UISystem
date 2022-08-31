@@ -13,8 +13,8 @@ public abstract class Mediator<T> : IMediator
 	public virtual void Initialize(IView view)
 	{
 		Requires.NotNull(view, nameof(view));
-		Requires.ValidOperation(View == null, this, nameof(Initialize));
 		Requires.Type<T>(view, nameof(view));
+		Requires.ValidOperation(View == null, this, nameof(Initialize));
 
 		View = (T) view;
 	}

@@ -49,20 +49,20 @@ public sealed class UiRootTests
 
 	private sealed class TestAssetsManager : IAssetsManager
 	{
-		public UniTask<GameObject> InstantiateAsync(string path,
+		public UniTask<GameObject> InstantiateAsync(string key,
 			CancellationToken ct)
 		{
 			throw new NotImplementedException();
 		}
 
-		public UniTask<GameObject> InstantiateAsync(string path,
+		public UniTask<GameObject> InstantiateAsync(string key,
 			Transform parent,
 			CancellationToken ct)
 		{
 			throw new NotImplementedException();
 		}
 
-		public UniTask<T> InstantiateAsync<T>(string path,
+		public UniTask<T> InstantiateAsync<T>(string key,
 			CancellationToken ct)
 			where T : Component
 		{
@@ -71,7 +71,7 @@ public sealed class UiRootTests
 			return new UniTask<T>((T)component);
 		}
 
-		public UniTask<T> InstantiateAsync<T>(string path,
+		public UniTask<T> InstantiateAsync<T>(string key,
 			Transform parent,
 			CancellationToken ct)
 			where T : Component
@@ -79,7 +79,19 @@ public sealed class UiRootTests
 			throw new NotImplementedException();
 		}
 
+		public T LoadAsset<T>(string path)
+			where T : UnityEngine.Object
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool ReleaseInstance(GameObject gameObject)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ReleaseAsset<T>(T asset)
+			where T : UnityEngine.Object
 		{
 			throw new NotImplementedException();
 		}

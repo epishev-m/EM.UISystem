@@ -11,7 +11,7 @@ public sealed class MediationBinding : Binding,
 
 	public IMediationBinding InGlobal()
 	{
-		Requires.ValidOperation(LifeTime == LifeTime.External, this, nameof(InGlobal));
+		Requires.ValidOperation(LifeTime == LifeTime.External, this);
 
 		LifeTime = LifeTime.Global;
 
@@ -20,7 +20,7 @@ public sealed class MediationBinding : Binding,
 
 	public IMediationBinding InLocal()
 	{
-		Requires.ValidOperation(LifeTime == LifeTime.External, this, nameof(InLocal));
+		Requires.ValidOperation(LifeTime == LifeTime.External, this);
 
 		LifeTime = LifeTime.Local;
 
@@ -34,7 +34,7 @@ public sealed class MediationBinding : Binding,
 	public new void To<T>()
 		where T : IMediator
 	{
-		Requires.ValidOperation(LifeTime != LifeTime.External, this, nameof(To));
+		Requires.ValidOperation(LifeTime != LifeTime.External, this);
 
 		base.To<T>();
 	}

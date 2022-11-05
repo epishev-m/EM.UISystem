@@ -14,7 +14,7 @@ public abstract class Mediator<T> : IMediator
 	{
 		Requires.NotNull(view, nameof(view));
 		Requires.Type<T>(view, nameof(view));
-		Requires.ValidOperation(View == null, this, nameof(Initialize));
+		Requires.ValidOperation(View == null, this);
 
 		View = (T) view;
 	}

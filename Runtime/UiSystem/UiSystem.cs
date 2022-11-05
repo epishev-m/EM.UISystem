@@ -20,7 +20,7 @@ public sealed class UiSystem : IUiSystem
 	public async UniTask CreateUiRootAsync(string assetId,
 		CancellationToken ct)
 	{
-		Requires.ValidOperation(_uiRoot == null, this, nameof(CreateUiRootAsync));
+		Requires.ValidOperation(_uiRoot == null, this);
 
 		_uiRoot = new UiRoot(_assetsManager);
 		await _uiRoot.CreateRootTransform(assetId, ct);
@@ -29,7 +29,7 @@ public sealed class UiSystem : IUiSystem
 	public async UniTask LoadAsync<T>(CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(_uiRoot != null, this, nameof(LoadAsync));
+		Requires.ValidOperation(_uiRoot != null, this);
 
 		if (_uiRoot != null)
 		{
@@ -55,7 +55,7 @@ public sealed class UiSystem : IUiSystem
 		CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(_uiRoot != null, this, nameof(OpenAsync));
+		Requires.ValidOperation(_uiRoot != null, this);
 
 		var panel = await _uiRoot.GetPanelViewAsync<T>(ct);
 
@@ -72,7 +72,7 @@ public sealed class UiSystem : IUiSystem
 	public async UniTask CloseAsync<T>(CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(_uiRoot != null, this, nameof(CloseAsync));
+		Requires.ValidOperation(_uiRoot != null, this);
 
 		if (!_modalLogicController.TryGetPanelView<T>(out var panel))
 		{

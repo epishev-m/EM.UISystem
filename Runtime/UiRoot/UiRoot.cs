@@ -26,7 +26,7 @@ public sealed class UiRoot : IUiRoot
 	public async UniTask CreateRootTransform(string assetId,
 		CancellationToken ct)
 	{
-		Requires.ValidOperation(_rootTransform == null, this, nameof(CreateRootTransform));
+		Requires.ValidOperation(_rootTransform == null, this);
 
 		_rootTransform = await _assetsManager.InstantiateAsync<Transform>(assetId, ct);
 
@@ -40,7 +40,7 @@ public sealed class UiRoot : IUiRoot
 	public async UniTask LoadPanelViewAsync<T>(CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(_rootTransform != null, this, nameof(LoadPanelViewAsync));
+		Requires.ValidOperation(_rootTransform != null, this);
 
 		var type = typeof(T);
 
@@ -97,7 +97,7 @@ public sealed class UiRoot : IUiRoot
 	public async UniTask<PanelView> GetPanelViewAsync<T>(CancellationToken ct)
 		where T : PanelView
 	{
-		Requires.ValidOperation(_rootTransform != null, this, nameof(GetPanelViewAsync));
+		Requires.ValidOperation(_rootTransform != null, this);
 
 		var panelView = GetObject<T>();
 

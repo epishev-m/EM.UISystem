@@ -115,7 +115,7 @@ public sealed class MediationContainer : Binder,
 		}
 
 		var type = (Type) values.First();
-		mediator = (IMediator) _container.GetInstance(type);
+		mediator = (IMediator) _container.Resolve(type);
 
 		if (mediator == null)
 		{

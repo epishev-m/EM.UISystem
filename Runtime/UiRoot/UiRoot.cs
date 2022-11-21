@@ -28,7 +28,14 @@ public sealed class UiRoot : IUiRoot
 	{
 		Requires.ValidOperation(_rootTransform == null, this);
 
-		_rootTransform = await _assetsManager.InstantiateAsync<Transform>(assetId, ct);
+		var result = await _assetsManager.InstantiateAsync<Transform>(assetId, ct);
+
+		if (result.Failure)
+		{
+			return;
+		}
+
+		_rootTransform = result.Data;
 
 		//The condition is necessary for the correct operation of unit tests
 		if (Application.isPlaying)
@@ -46,7 +53,14 @@ public sealed class UiRoot : IUiRoot
 
 		if (type.GetCustomAttribute(typeof(AssetAttribute)) is AssetAttribute attribute)
 		{
-			var panelView = await _assetsManager.InstantiateAsync<T>(attribute.Id, _rootTransform, ct);
+			var result = await _assetsManager.InstantiateAsync<T>(attribute.Id, _rootTransform, ct);
+
+			if (result.Failure)
+			{
+				return;
+			}
+
+			var panelView = result.Data;
 			PutObject<T>(panelView, attribute.LifeTime);
 		}
 	}

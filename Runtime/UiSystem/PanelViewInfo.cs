@@ -5,16 +5,16 @@ using Foundation;
 
 public sealed class PanelViewInfo
 {
-	public readonly PanelView PanelView;
+	public readonly UIView View;
 
 	public readonly Modes Mode;
 
-	public PanelViewInfo(PanelView panelView,
+	public PanelViewInfo(UIView view,
 		Modes mode)
 	{
-		Requires.NotNull(panelView, nameof(panelView));
+		Requires.NotNull(view, nameof(view));
 
-		PanelView = panelView;
+		View = view;
 		Mode = mode;
 	}
 }

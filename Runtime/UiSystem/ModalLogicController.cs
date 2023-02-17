@@ -11,16 +11,16 @@ public class ModalLogicController
 
 	#region ModalLogicController
 
-	public bool TryGetPanelView<T>(out PanelView panelView)
-		where T : PanelView
+	public bool TryGetPanelView<TView>(out UIView panelView)
+		where TView : UIView
 	{
-		var panelViewInfo = _openPanelsViews.LastOrDefault(pv => pv.PanelView as T);
-		panelView = panelViewInfo?.PanelView;
+		var panelViewInfo = _openPanelsViews.LastOrDefault(pv => pv.View is TView);
+		panelView = panelViewInfo?.View;
 
 		return panelViewInfo != null;
 	}
 
-	public void Add(PanelView panel,
+	public void Add(UIView panel,
 		Modes mode)
 	{
 		Requires.NotNull(panel, nameof(panel));
@@ -35,11 +35,11 @@ public class ModalLogicController
 		}
 	}
 
-	public void Remove(PanelView panel)
+	public void Remove(UIView panel)
 	{
 		Requires.NotNull(panel, nameof(panel));
 
-		var panelInfo = _openPanelsViews.Find(info => info.PanelView == panel);
+		var panelInfo = _openPanelsViews.Find(info => info.View == panel);
 
 		if (panelInfo.Mode == Modes.Modal)
 		{
@@ -51,11 +51,11 @@ public class ModalLogicController
 		}
 	}
 
-	private void Add(PanelView panel)
+	private void Add(UIView panel)
 	{
 		Requires.NotNull(panel, nameof(panel));
 
-		var panelInfo = _openPanelsViews.Find(info => info.PanelView == panel);
+		var panelInfo = _openPanelsViews.Find(info => info.View == panel);
 
 		if (panelInfo != null)
 		{
@@ -69,11 +69,11 @@ public class ModalLogicController
 		}
 	}
 
-	private void AddModal(PanelView panel)
+	private void AddModal(UIView panel)
 	{
 		Requires.NotNull(panel, nameof(panel));
 
-		var viewInfo = _openPanelsViews.Find(info => info.PanelView == panel);
+		var viewInfo = _openPanelsViews.Find(info => info.View == panel);
 
 		if (viewInfo != null)
 		{
@@ -84,7 +84,7 @@ public class ModalLogicController
 
 		foreach (var info in _openPanelsViews)
 		{
-			info.PanelView.IsInteractable = false;
+			info.View.IsInteractable = false;
 		}
 
 		_openPanelsViews.Add(viewInfo);
@@ -108,7 +108,7 @@ public class ModalLogicController
 
 		foreach (var viewInfo in _openPanelsViews)
 		{
-			viewInfo.PanelView.IsInteractable = true;
+			viewInfo.View.IsInteractable = true;
 
 			if (viewInfo.Mode == Modes.Modal)
 			{

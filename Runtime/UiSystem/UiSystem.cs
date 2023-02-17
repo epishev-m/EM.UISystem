@@ -1,14 +1,16 @@
 namespace EM.UI
 {
 
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
+using IoC;
 
 public sealed class UiSystem : IUiSystem
 {
-	private readonly IMediationContainer _mediationContainer;
-
+	private readonly IDiContainer _diContainer;
+	
 	private readonly IAssetsManager _assetsManager;
 
 	private readonly ModalLogicController _modalLogicController = new();
@@ -26,14 +28,14 @@ public sealed class UiSystem : IUiSystem
 		await _uiRoot.CreateRootTransform(assetId, ct);
 	}
 
-	public async UniTask LoadAsync<T>(CancellationToken ct)
-		where T : PanelView
+	public async UniTask LoadAsync<TView>(CancellationToken ct)
+		where TView : UIView
 	{
 		Requires.ValidOperation(_uiRoot != null, this);
 
 		if (_uiRoot != null)
 		{
-			await _uiRoot.LoadPanelViewAsync<T>(ct);
+			await _uiRoot.LoadPanelViewAsync<TView>(ct);
 		}
 	}
 
@@ -45,53 +47,77 @@ public sealed class UiSystem : IUiSystem
 		}
 	}
 
-	public async UniTask OpenAsync<T>(CancellationToken ct)
-		where T : PanelView
+	public async UniTask OpenAsync<TView>(CancellationToken ct)
+		where TView : UIView
 	{
-		await OpenAsync<T>(Modes.None, ct);
+		await OpenAsync<TView>(Modes.None, null, ct);
 	}
 
-	public async UniTask OpenAsync<T>(Modes mode,
+	public async UniTask OpenAsync<TView, TViewModel>(Modes mode,
 		CancellationToken ct)
-		where T : PanelView
+		where TView : UIView
+		where TViewModel : IViewModel
 	{
-		Requires.ValidOperation(_uiRoot != null, this);
-
-		var panel = await _uiRoot.GetPanelViewAsync<T>(ct);
-
-		if (panel.IsOpened)
-		{
-			return;
-		}
-
-		await panel.OpenAsync(ct);
-		_modalLogicController.Add(panel, mode);
-		_mediationContainer.Trigger(MediationTrigger.Initialise, panel);
+		await OpenAsync<TView>(mode, typeof(TViewModel), ct);
 	}
 
-	public async UniTask CloseAsync<T>(CancellationToken ct)
-		where T : PanelView
+	public async UniTask OpenAsync<TView, TViewModel>(CancellationToken ct)
+		where TView : UIView
+		where TViewModel : IViewModel
+	{
+		await OpenAsync<TView>(Modes.None, typeof(TViewModel), ct);
+	}
+
+	public async UniTask OpenAsync<TView>(Modes mode,
+		CancellationToken ct)
+		where TView : UIView
+	{
+		await OpenAsync<TView>(mode, null, ct);
+	}
+
+	public async UniTask CloseAsync<TView>(CancellationToken ct)
+		where TView : UIView
 	{
 		Requires.ValidOperation(_uiRoot != null, this);
 
-		if (!_modalLogicController.TryGetPanelView<T>(out var panel))
+		if (!_modalLogicController.TryGetPanelView<TView>(out var panel))
 		{
 			return;
 		}
 
 		await panel.CloseAsync(ct);
+		panel.Release();
 		_modalLogicController.Remove(panel);
-		_mediationContainer.Trigger(MediationTrigger.Release, panel);
+	}
+
+	private async UniTask OpenAsync<TView>(Modes mode,
+		Type viewModelType,
+		CancellationToken ct)
+		where TView : UIView
+	{
+		Requires.ValidOperation(_uiRoot != null, this);
+
+		var panel = await _uiRoot.GetPanelViewAsync<TView>(ct);
+		IViewModel viewModel = default;
+
+		if (viewModelType != null)
+		{
+			viewModel = _diContainer.Resolve(viewModelType) as IViewModel;
+		}
+
+		panel.Initialize(viewModel);
+		await panel.OpenAsync(ct);
+		_modalLogicController.Add(panel, mode);
 	}
 
 	#endregion
 
 	#region UiSystem
 
-	public UiSystem(IMediationContainer mediationContainer,
+	public UiSystem(IDiContainer diContainer,
 		IAssetsManager assetsManager)
 	{
-		_mediationContainer = mediationContainer;
+		_diContainer = diContainer;
 		_assetsManager = assetsManager;
 	}
 

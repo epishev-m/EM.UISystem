@@ -34,7 +34,7 @@ internal sealed class PanelViewInfoTests
 
 		// Act
 		var panelInfo = new PanelViewInfo(expected, Modes.None);
-		var actual = panelInfo.PanelView;
+		var actual = panelInfo.View;
 
 		// Assert
 		Assert.AreEqual(expected, actual);
@@ -58,8 +58,17 @@ internal sealed class PanelViewInfoTests
 
 	#region Nested
 
-	private sealed class PanelViewTest : PanelView
+	private sealed class PanelViewTest : UIView
 	{
+		protected override void OnInitialize()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void OnRelease()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	#endregion

@@ -133,8 +133,17 @@ internal sealed class ModalLogicControllerTests
 
 	#region Nested
 
-	private sealed class PanelViewTest : PanelView
+	private sealed class PanelViewTest : UIView
 	{
+		protected override void OnInitialize()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void OnRelease()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	#endregion

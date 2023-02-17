@@ -99,8 +99,17 @@ public sealed class UiRootTests
 		}
 	}
 
-	private sealed class TestPanelView : PanelView
+	private sealed class TestPanelView : UIView
 	{
+		protected override void OnInitialize()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void OnRelease()
+		{
+			throw new NotImplementedException();
+		}
 	}
 	
 	#endregion

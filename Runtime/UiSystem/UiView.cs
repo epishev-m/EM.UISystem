@@ -1,19 +1,20 @@
-namespace EM.UI
+﻿namespace EM.UI
 {
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public abstract class PanelView : View
+public abstract class UIView : MonoBehaviour
 {
-	[Header(nameof(PanelView))]
-
+	[Header(nameof(UIView))]
 	[SerializeField]
 	private Canvas _canvas;
 
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
+
+	protected IViewModel ViewModelBase;
 
 	#region MonoBehaviour
 
@@ -35,13 +36,7 @@ public abstract class PanelView : View
 
 	#endregion
 
-	#region View
-
-	public override bool IsEnabled => IsOpened;
-
-	#endregion
-
-	#region PanelView
+	#region UIView
 
 	public bool IsOpened => _canvas.enabled;
 
@@ -49,6 +44,20 @@ public abstract class PanelView : View
 	{
 		get => _canvasGroup.blocksRaycasts;
 		set => _canvasGroup.blocksRaycasts = value;
+	}
+
+	public void Initialize(IViewModel viewModel)
+	{
+		ViewModelBase = viewModel;
+		ViewModelBase?.Initialize();
+		OnInitialize();
+	}
+
+	public void Release()
+	{
+		OnRelease();
+		ViewModelBase?.Release();
+		ViewModelBase = null;
 	}
 
 	public virtual UniTask OpenAsync(CancellationToken ct)
@@ -79,7 +88,17 @@ public abstract class PanelView : View
 		return UniTask.CompletedTask;
 	}
 
+	protected abstract void OnInitialize();
+
+	protected abstract void OnRelease();
+
 	#endregion
+}
+
+public abstract class UiView<T> : UIView
+	where T : class, IViewModel
+{
+	protected T ViewModel => ViewModelBase as T;
 }
 
 }

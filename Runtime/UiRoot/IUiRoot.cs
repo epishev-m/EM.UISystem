@@ -10,13 +10,13 @@ public interface IUiRoot
 	UniTask CreateRootTransform(string id,
 		CancellationToken ct);
 
-	UniTask LoadPanelViewAsync<T>(CancellationToken ct)
-		where T : PanelView;
+	UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
+		where TView : UIView;
 
 	void UnloadPanelView(LifeTime lifeTime);
 
-	UniTask<PanelView> GetPanelViewAsync<T>(CancellationToken ct)
-		where T : PanelView;
+	UniTask<UIView> GetPanelViewAsync<TView>(CancellationToken ct)
+		where TView : UIView;
 }
 
 }

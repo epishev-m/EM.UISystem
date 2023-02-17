@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 
 public sealed class UiRoot : IUiRoot
 {
-	private readonly Dictionary<Type, List<PanelView>> _viewPanels = new();
+	private readonly Dictionary<Type, List<UIView>> _viewPanels = new();
 
 	private readonly Dictionary<Type, LifeTime> _lifeTimeInfoList = new();
 
@@ -44,16 +44,16 @@ public sealed class UiRoot : IUiRoot
 		}
 	}
 
-	public async UniTask LoadPanelViewAsync<T>(CancellationToken ct)
-		where T : PanelView
+	public async UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
+		where TView : UIView
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
 
-		var type = typeof(T);
+		var type = typeof(TView);
 
 		if (type.GetCustomAttribute(typeof(AssetAttribute)) is AssetAttribute attribute)
 		{
-			var result = await _assetsManager.InstantiateAsync<T>(attribute.Id, _rootTransform, ct);
+			var result = await _assetsManager.InstantiateAsync<TView>(attribute.Id, _rootTransform, ct);
 
 			if (result.Failure)
 			{
@@ -61,7 +61,7 @@ public sealed class UiRoot : IUiRoot
 			}
 
 			var panelView = result.Data;
-			PutObject<T>(panelView, attribute.LifeTime);
+			PutObject<TView>(panelView, attribute.LifeTime);
 		}
 	}
 
@@ -78,7 +78,7 @@ public sealed class UiRoot : IUiRoot
 				continue;
 			}
 
-			var openedPanelsViews = new List<PanelView>();
+			var openedPanelsViews = new List<UIView>();
 
 			foreach (var panelView in panelsViewsList)
 			{
@@ -108,20 +108,20 @@ public sealed class UiRoot : IUiRoot
 		}
 	}
 
-	public async UniTask<PanelView> GetPanelViewAsync<T>(CancellationToken ct)
-		where T : PanelView
+	public async UniTask<UIView> GetPanelViewAsync<TView>(CancellationToken ct)
+		where TView : UIView
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
 
-		var panelView = GetObject<T>();
+		var panelView = GetObject<TView>();
 
 		if (panelView != null)
 		{
 			return panelView;
 		}
 
-		await LoadPanelViewAsync<T>(ct);
-		panelView = GetObject<T>();
+		await LoadPanelViewAsync<TView>(ct);
+		panelView = GetObject<TView>();
 
 		return panelView;
 	}
@@ -137,9 +137,10 @@ public sealed class UiRoot : IUiRoot
 		_assetsManager = assetsManager;
 	}
 
-	private PanelView GetObject<T>()
+	private UIView GetObject<TView>()
+		where TView : UIView
 	{
-		if (!_viewPanels.TryGetValue(typeof(T), out var list))
+		if (!_viewPanels.TryGetValue(typeof(TView), out var list))
 		{
 			return null;
 		}
@@ -149,15 +150,15 @@ public sealed class UiRoot : IUiRoot
 		return panelView;
 	}
 
-	private void PutObject<T>(PanelView panelView,
+	private void PutObject<TView>(UIView panelView,
 		LifeTime lifeTime)
-		where T : PanelView
+		where TView : UIView
 	{
-		var key = typeof(T);
+		var key = typeof(TView);
 
 		if (!_viewPanels.TryGetValue(key, out var list))
 		{
-			list = new List<PanelView>(4);
+			list = new List<UIView>(4);
 			_viewPanels.Add(key, list);
 			_lifeTimeInfoList.Add(key, lifeTime);
 		}

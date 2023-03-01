@@ -11,12 +11,12 @@ public interface IUiRoot
 		CancellationToken ct);
 
 	UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
-		where TView : UIView;
+		where TView : View;
 
 	void UnloadPanelView(LifeTime lifeTime);
 
-	UniTask<UIView> GetPanelViewAsync<TView>(CancellationToken ct)
-		where TView : UIView;
+	UniTask<TView> GetPanelViewAsync<TView>(CancellationToken ct)
+		where TView : View;
 }
 
 }

@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 
 public sealed class UiRoot : IUiRoot
 {
-	private readonly Dictionary<Type, List<UIView>> _viewPanels = new();
+	private readonly Dictionary<Type, List<View>> _viewPanels = new();
 
 	private readonly Dictionary<Type, LifeTime> _lifeTimeInfoList = new();
 
@@ -45,7 +45,7 @@ public sealed class UiRoot : IUiRoot
 	}
 
 	public async UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
-		where TView : UIView
+		where TView : View
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
 
@@ -78,7 +78,7 @@ public sealed class UiRoot : IUiRoot
 				continue;
 			}
 
-			var openedPanelsViews = new List<UIView>();
+			var openedPanelsViews = new List<View>();
 
 			foreach (var panelView in panelsViewsList)
 			{
@@ -108,8 +108,8 @@ public sealed class UiRoot : IUiRoot
 		}
 	}
 
-	public async UniTask<UIView> GetPanelViewAsync<TView>(CancellationToken ct)
-		where TView : UIView
+	public async UniTask<TView> GetPanelViewAsync<TView>(CancellationToken ct)
+		where TView : View
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
 
@@ -117,13 +117,13 @@ public sealed class UiRoot : IUiRoot
 
 		if (panelView != null)
 		{
-			return panelView;
+			return (TView) panelView;
 		}
 
 		await LoadPanelViewAsync<TView>(ct);
 		panelView = GetObject<TView>();
 
-		return panelView;
+		return (TView) panelView;
 	}
 
 	#endregion
@@ -132,13 +132,13 @@ public sealed class UiRoot : IUiRoot
 
 	public UiRoot(IAssetsManager assetsManager)
 	{
-		Requires.NotNull(assetsManager, nameof(assetsManager));
+		Requires.NotNullParam(assetsManager, nameof(assetsManager));
 
 		_assetsManager = assetsManager;
 	}
 
-	private UIView GetObject<TView>()
-		where TView : UIView
+	private View GetObject<TView>()
+		where TView : View
 	{
 		if (!_viewPanels.TryGetValue(typeof(TView), out var list))
 		{
@@ -150,15 +150,15 @@ public sealed class UiRoot : IUiRoot
 		return panelView;
 	}
 
-	private void PutObject<TView>(UIView panelView,
+	private void PutObject<TView>(View panelView,
 		LifeTime lifeTime)
-		where TView : UIView
+		where TView : View
 	{
 		var key = typeof(TView);
 
 		if (!_viewPanels.TryGetValue(key, out var list))
 		{
-			list = new List<UIView>(4);
+			list = new List<View>(4);
 			_viewPanels.Add(key, list);
 			_lifeTimeInfoList.Add(key, lifeTime);
 		}

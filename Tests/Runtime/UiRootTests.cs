@@ -99,14 +99,9 @@ public sealed class UiRootTests
 		}
 	}
 
-	private sealed class TestPanelView : UIView
+	private sealed class TestPanelView : View
 	{
-		protected override void OnInitialize()
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override void OnRelease()
+		public override void SetViewModel(object viewModel)
 		{
 			throw new NotImplementedException();
 		}

@@ -11,8 +11,8 @@ public class ModalLogicController
 
 	#region ModalLogicController
 
-	public bool TryGetPanelView<TView>(out UIView panelView)
-		where TView : UIView
+	public bool TryGetPanelView<TView>(out View panelView)
+		where TView : View
 	{
 		var panelViewInfo = _openPanelsViews.LastOrDefault(pv => pv.View is TView);
 		panelView = panelViewInfo?.View;
@@ -20,10 +20,10 @@ public class ModalLogicController
 		return panelViewInfo != null;
 	}
 
-	public void Add(UIView panel,
+	public void Add(View panel,
 		Modes mode)
 	{
-		Requires.NotNull(panel, nameof(panel));
+		Requires.NotNullParam(panel, nameof(panel));
 
 		if (mode == Modes.Modal)
 		{
@@ -35,9 +35,9 @@ public class ModalLogicController
 		}
 	}
 
-	public void Remove(UIView panel)
+	public void Remove(View panel)
 	{
-		Requires.NotNull(panel, nameof(panel));
+		Requires.NotNullParam(panel, nameof(panel));
 
 		var panelInfo = _openPanelsViews.Find(info => info.View == panel);
 
@@ -51,9 +51,9 @@ public class ModalLogicController
 		}
 	}
 
-	private void Add(UIView panel)
+	private void Add(View panel)
 	{
-		Requires.NotNull(panel, nameof(panel));
+		Requires.NotNullParam(panel, nameof(panel));
 
 		var panelInfo = _openPanelsViews.Find(info => info.View == panel);
 
@@ -69,9 +69,9 @@ public class ModalLogicController
 		}
 	}
 
-	private void AddModal(UIView panel)
+	private void AddModal(View panel)
 	{
-		Requires.NotNull(panel, nameof(panel));
+		Requires.NotNullParam(panel, nameof(panel));
 
 		var viewInfo = _openPanelsViews.Find(info => info.View == panel);
 
@@ -92,14 +92,14 @@ public class ModalLogicController
 
 	private void Remove(PanelViewInfo panelViewInfo)
 	{
-		Requires.NotNull(panelViewInfo, nameof(panelViewInfo));
+		Requires.NotNullParam(panelViewInfo, nameof(panelViewInfo));
 
 		_openPanelsViews.Remove(panelViewInfo);
 	}
 
 	private void RemoveModal(PanelViewInfo panelViewInfo)
 	{
-		Requires.NotNull(panelViewInfo, nameof(panelViewInfo));
+		Requires.NotNullParam(panelViewInfo, nameof(panelViewInfo));
 
 		if (!_openPanelsViews.Remove(panelViewInfo))
 		{

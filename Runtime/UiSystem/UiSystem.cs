@@ -10,7 +10,7 @@ using IoC;
 public sealed class UiSystem : IUiSystem
 {
 	private readonly IDiContainer _diContainer;
-	
+
 	private readonly IAssetsManager _assetsManager;
 
 	private readonly ModalLogicController _modalLogicController = new();
@@ -29,7 +29,7 @@ public sealed class UiSystem : IUiSystem
 	}
 
 	public async UniTask LoadAsync<TView>(CancellationToken ct)
-		where TView : UIView
+		where TView : View
 	{
 		Requires.ValidOperation(_uiRoot != null, this);
 
@@ -48,35 +48,37 @@ public sealed class UiSystem : IUiSystem
 	}
 
 	public async UniTask OpenAsync<TView>(CancellationToken ct)
-		where TView : UIView
+		where TView : View
 	{
-		await OpenAsync<TView>(Modes.None, null, ct);
+		await OpenWithoutViewModelAsync<TView>(Modes.None, ct);
 	}
 
 	public async UniTask OpenAsync<TView, TViewModel>(Modes mode,
 		CancellationToken ct)
-		where TView : UIView
-		where TViewModel : IViewModel
+		where TView : View
+		where TViewModel : class
 	{
-		await OpenAsync<TView>(mode, typeof(TViewModel), ct);
+		var viewModel = _diContainer.Resolve<TViewModel>();
+		await OpenWithViewModelAsync<TView, TViewModel>(mode, viewModel, ct);
 	}
 
 	public async UniTask OpenAsync<TView, TViewModel>(CancellationToken ct)
-		where TView : UIView
-		where TViewModel : IViewModel
+		where TView : View
+		where TViewModel : class
 	{
-		await OpenAsync<TView>(Modes.None, typeof(TViewModel), ct);
+		var viewModel = _diContainer.Resolve<TViewModel>();
+		await OpenWithViewModelAsync<TView, TViewModel>(Modes.None, viewModel, ct);
 	}
 
 	public async UniTask OpenAsync<TView>(Modes mode,
 		CancellationToken ct)
-		where TView : UIView
+		where TView : View
 	{
-		await OpenAsync<TView>(mode, null, ct);
+		await OpenWithoutViewModelAsync<TView>(mode, ct);
 	}
 
 	public async UniTask CloseAsync<TView>(CancellationToken ct)
-		where TView : UIView
+		where TView : View
 	{
 		Requires.ValidOperation(_uiRoot != null, this);
 
@@ -86,26 +88,53 @@ public sealed class UiSystem : IUiSystem
 		}
 
 		await panel.CloseAsync(ct);
-		panel.Release();
 		_modalLogicController.Remove(panel);
+
+		if (panel is IDisposable dispose)
+		{
+			dispose.Dispose();
+		}
 	}
 
-	private async UniTask OpenAsync<TView>(Modes mode,
-		Type viewModelType,
+	private async UniTask OpenWithoutViewModelAsync<TView>(Modes mode,
 		CancellationToken ct)
-		where TView : UIView
+		where TView : View
 	{
 		Requires.ValidOperation(_uiRoot != null, this);
 
-		var panel = await _uiRoot.GetPanelViewAsync<TView>(ct);
-		IViewModel viewModel = default;
-
-		if (viewModelType != null)
+		if (_uiRoot == null)
 		{
-			viewModel = _diContainer.Resolve(viewModelType) as IViewModel;
+			return;
 		}
 
-		panel.Initialize(viewModel);
+		var panel = await _uiRoot.GetPanelViewAsync<TView>(ct);
+		await panel.OpenAsync(ct);
+		_modalLogicController.Add(panel, mode);
+	}
+
+	private async UniTask OpenWithViewModelAsync<TView, TViewModel>(Modes mode,
+		TViewModel viewModel,
+		CancellationToken ct)
+		where TView : View
+		where TViewModel : class
+	{
+		Requires.ValidOperation(_uiRoot != null, this);
+
+		if (_uiRoot == null)
+		{
+			return;
+		}
+
+		var panel = await _uiRoot.GetPanelViewAsync<TView>(ct);
+
+		Requires.NotNull(panel, nameof(panel));
+
+		if (panel == null)
+		{
+			return;
+		}
+
+		panel.SetViewModel(viewModel);
 		await panel.OpenAsync(ct);
 		_modalLogicController.Add(panel, mode);
 	}

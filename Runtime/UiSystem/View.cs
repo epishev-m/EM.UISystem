@@ -7,11 +7,13 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Canvas), typeof(CanvasGroup))]
 public abstract class View : MonoBehaviour
 {
 	[Header(nameof(View))]
+
 	[SerializeField]
 	private Canvas _canvas;
 
@@ -86,9 +88,9 @@ public abstract class View<T> : View
 {
 	protected T ViewModel;
 
-	private readonly PropertyHandlerPool _propertyHandlerPool = new();
+	private readonly EventProviderHandlerPool _eventProviderHandlerPool = new();
 
-	private readonly List<IDisposable> _listOfDisposeAtClosing  = new();
+	private readonly List<EventProviderHandler> _eventProviderHandlers  = new();
 
 	#region View
 
@@ -103,35 +105,83 @@ public abstract class View<T> : View
 	public override async UniTask CloseAsync(CancellationToken ct)
 	{
 		await base.CloseAsync(ct);
+		OnRelease();
 		ListDispose();
 		ViewModelDispose();
 	}
 
 	#endregion
 
-	protected abstract void OnInitialize();
+	#region View<T>
 
-	protected void Subscribe<TValue>(IRxProperty<TValue> property,
+	public void Subscribe<TValue>(IRxProperty<TValue> property,
 		Action<TValue> handler)
 	{
+		Requires.NotNullParam(property, nameof(property));
+		Requires.NotNullParam(handler, nameof(handler));
+
 		SubscribeInternal(property, () => handler(property.Value));
+	}
+
+	public void Subscribe(UnityEvent unityEvent,
+		Action handler)
+	{
+		Requires.NotNullParam(unityEvent, nameof(unityEvent));
+		Requires.NotNullParam(handler, nameof(handler));
+
+		SubscribeInternal(unityEvent, handler);
+	}
+
+	public void Subscribe<TValue>(UnityEvent<TValue> unityEvent,
+		Action<TValue> handler)
+	{
+		Requires.NotNullParam(unityEvent, nameof(unityEvent));
+		Requires.NotNullParam(handler, nameof(handler));
+
+		SubscribeInternal(unityEvent, handler);
+	}
+
+	protected virtual void OnInitialize()
+	{
+	}
+
+	protected virtual void OnRelease()
+	{
 	}
 
 	private void SubscribeInternal(IEventProvider eventProvider,
 		Action handler)
 	{
-		var propertyHandler = _propertyHandlerPool.Get(eventProvider, handler);
-		_listOfDisposeAtClosing.Add(propertyHandler);
+		var eventProviderHandler = _eventProviderHandlerPool.Get(eventProvider, handler);
+		_eventProviderHandlers.Add(eventProviderHandler);
+	}
+
+	private void SubscribeInternal(UnityEvent unityEvent,
+		Action handler)
+	{
+		var unityEventProviderHandler = new UnityEventProvider(unityEvent);
+		var eventProviderHandler = _eventProviderHandlerPool.Get(unityEventProviderHandler, handler);
+		_eventProviderHandlers.Add(eventProviderHandler);
+	}
+
+	private void SubscribeInternal<TValue>(UnityEvent<TValue> unityEvent,
+		Action<TValue> handler)
+	{
+		unityEvent.AddListener(handler.Invoke);
+		var unityEventProviderHandler = new UnityEventProvider<TValue>(unityEvent);
+		var eventProviderHandler = _eventProviderHandlerPool.Get(unityEventProviderHandler, null);
+		_eventProviderHandlers.Add(eventProviderHandler);
 	}
 
 	private void ListDispose()
 	{
-		foreach (var disposable in _listOfDisposeAtClosing)
+		foreach (var propertyHandler in _eventProviderHandlers)
 		{
-			disposable.Dispose();
+			propertyHandler.Dispose();
+			_eventProviderHandlerPool.Put(propertyHandler);
 		}
 
-		_listOfDisposeAtClosing.Clear();
+		_eventProviderHandlers.Clear();
 	}
 
 	private void ViewModelDispose()
@@ -143,6 +193,8 @@ public abstract class View<T> : View
 
 		ViewModel = null;
 	}
+
+	#endregion
 }
 
 }

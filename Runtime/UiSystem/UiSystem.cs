@@ -5,13 +5,12 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
-using IoC;
 
 public sealed class UiSystem : IUiSystem
 {
-	private readonly IDiContainer _diContainer;
-
 	private readonly IAssetsManager _assetsManager;
+
+	private readonly IViewModelFactory _viewModelFactory;
 
 	private readonly ModalLogicController _modalLogicController = new();
 
@@ -58,7 +57,7 @@ public sealed class UiSystem : IUiSystem
 		where TView : View
 		where TViewModel : class
 	{
-		var viewModel = _diContainer.Resolve<TViewModel>();
+		var viewModel = _viewModelFactory.Get<TViewModel>();
 		await OpenWithViewModelAsync<TView, TViewModel>(mode, viewModel, ct);
 	}
 
@@ -66,7 +65,7 @@ public sealed class UiSystem : IUiSystem
 		where TView : View
 		where TViewModel : class
 	{
-		var viewModel = _diContainer.Resolve<TViewModel>();
+		var viewModel = _viewModelFactory.Get<TViewModel>();
 		await OpenWithViewModelAsync<TView, TViewModel>(Modes.None, viewModel, ct);
 	}
 
@@ -143,11 +142,11 @@ public sealed class UiSystem : IUiSystem
 
 	#region UiSystem
 
-	public UiSystem(IDiContainer diContainer,
-		IAssetsManager assetsManager)
+	public UiSystem(IAssetsManager assetsManager,
+		IViewModelFactory viewModelFactory)
 	{
-		_diContainer = diContainer;
 		_assetsManager = assetsManager;
+		_viewModelFactory = viewModelFactory;
 	}
 
 	#endregion

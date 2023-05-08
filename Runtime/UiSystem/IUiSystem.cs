@@ -7,8 +7,7 @@ using Foundation;
 
 public interface IUiSystem
 {
-	UniTask CreateUiRootAsync(string id,
-		CancellationToken ct);
+	void CreateUiRootAsync(string id);
 
 	UniTask LoadAsync<TView>(CancellationToken ct)
 		where TView : View;

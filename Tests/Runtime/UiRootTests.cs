@@ -37,7 +37,7 @@ public sealed class UiRootTests
 		var cancellationToken = new CancellationToken();
 
 		// Act
-		uiRoot.CreateRootTransform("test", cancellationToken);
+		uiRoot.CreateRootTransform("test");
 		uiRoot.LoadPanelViewAsync<TestPanelView>(cancellationToken);
 		var actual = uiRoot.GetPanelViewAsync<TestPanelView>(cancellationToken);
 
@@ -49,6 +49,17 @@ public sealed class UiRootTests
 
 	private sealed class TestAssetsManager : IAssetsManager
 	{
+		public Result<GameObject> Instantiate(string key)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Result<GameObject> Instantiate(string key,
+			Transform parent)
+		{
+			throw new NotImplementedException();
+		}
+
 		public UniTask<Result<GameObject>> InstantiateAsync(string key,
 			CancellationToken ct)
 		{
@@ -58,6 +69,21 @@ public sealed class UiRootTests
 		public UniTask<Result<GameObject>> InstantiateAsync(string key,
 			Transform parent,
 			CancellationToken ct)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Result<T> Instantiate<T>(string key) where T : Component
+		{
+			var gameObject = new GameObject();
+			var component = (Component) gameObject.transform;
+			var result = new SuccessResult<T>((T) component);
+
+			return result;
+		}
+
+		public Result<T> Instantiate<T>(string key,
+			Transform parent) where T : Component
 		{
 			throw new NotImplementedException();
 		}

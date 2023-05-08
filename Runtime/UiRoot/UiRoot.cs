@@ -23,12 +23,11 @@ public sealed class UiRoot : IUiRoot
 
 	#region IUiRoot
 
-	public async UniTask CreateRootTransform(string assetId,
-		CancellationToken ct)
+	public void CreateRootTransform(string assetId)
 	{
 		Requires.ValidOperation(_rootTransform == null, this);
 
-		var result = await _assetsManager.InstantiateAsync<Transform>(assetId, ct);
+		var result = _assetsManager.Instantiate<Transform>(assetId);
 
 		if (result.Failure)
 		{

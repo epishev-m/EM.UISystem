@@ -18,13 +18,12 @@ public sealed class UiSystem : IUiSystem
 
 	#region IUiSystem
 
-	public async UniTask CreateUiRootAsync(string assetId,
-		CancellationToken ct)
+	public void CreateUiRootAsync(string assetId)
 	{
 		Requires.ValidOperation(_uiRoot == null, this);
 
 		_uiRoot = new UiRoot(_assetsManager);
-		await _uiRoot.CreateRootTransform(assetId, ct);
+		_uiRoot.CreateRootTransform(assetId);
 	}
 
 	public async UniTask LoadAsync<TView>(CancellationToken ct)

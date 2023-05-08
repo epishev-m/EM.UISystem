@@ -7,8 +7,7 @@ using Foundation;
 
 public interface IUiRoot
 {
-	UniTask CreateRootTransform(string id,
-		CancellationToken ct);
+	void CreateRootTransform(string id);
 
 	UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
 		where TView : View;

@@ -51,7 +51,7 @@ public sealed class UiRoot : IUiRoot
 
 		var type = typeof(TView);
 
-		if (type.GetCustomAttribute(typeof(AssetAttribute)) is AssetAttribute attribute)
+		if (type.GetCustomAttribute(typeof(ViewAssetAttribute)) is ViewAssetAttribute attribute)
 		{
 			var result = await _assetsManager.InstantiateAsync<TView>(attribute.Id, _rootTransform, ct);
 

@@ -4,7 +4,7 @@ namespace EM.UI
 using System;
 using Foundation;
 
-public class AssetAttribute : Attribute
+public class ViewAssetAttribute : Attribute
 {
 	public readonly string Id;
 
@@ -12,7 +12,7 @@ public class AssetAttribute : Attribute
 
 	#region AssetAttribute
 
-	public AssetAttribute(string id,
+	public ViewAssetAttribute(string id,
 		LifeTime lifeTime)
 	{
 		Requires.ValidArgument(!string.IsNullOrWhiteSpace(id), nameof(id));

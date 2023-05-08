@@ -14,7 +14,7 @@ public sealed class AssetAttributeTests
 		// Act
 		try
 		{
-			var unused = new AssetAttribute(string.Empty, LifeTime.Local);
+			var unused = new ViewAssetAttribute(string.Empty, LifeTime.Local);
 		}
 		catch (ArgumentException)
 		{
@@ -32,7 +32,7 @@ public sealed class AssetAttributeTests
 		const string expected = "test";
 
 		// Act
-		var assetAttribute = new AssetAttribute(expected, LifeTime.Global);
+		var assetAttribute = new ViewAssetAttribute(expected, LifeTime.Global);
 		var actual = assetAttribute.Id;
 
 		// Assert
@@ -46,7 +46,7 @@ public sealed class AssetAttributeTests
 		const LifeTime expected = LifeTime.Global;
 
 		// Act
-		var assetAttribute = new AssetAttribute("test", expected);
+		var assetAttribute = new ViewAssetAttribute("test", expected);
 		var actual = assetAttribute.LifeTime;
 
 		// Assert

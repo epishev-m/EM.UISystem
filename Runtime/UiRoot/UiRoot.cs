@@ -9,7 +9,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 public sealed class UiRoot : IUiRoot
 {
@@ -39,7 +38,7 @@ public sealed class UiRoot : IUiRoot
 		//The condition is necessary for the correct operation of unit tests
 		if (Application.isPlaying)
 		{
-			Object.DontDestroyOnLoad(_rootTransform);
+			UnityEngine.Object.DontDestroyOnLoad(_rootTransform);
 		}
 	}
 

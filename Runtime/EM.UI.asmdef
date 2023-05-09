@@ -5,6 +5,7 @@
         "EM.Foundation",
         "Unity.Addressables",
         "Unity.ResourceManager",
+        "Unity.TextMeshPro",
         "UniTask"
     ],
     "includePlatforms": [],

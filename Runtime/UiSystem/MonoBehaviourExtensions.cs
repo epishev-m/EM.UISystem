@@ -83,6 +83,18 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(property, action, cts).Forget();
 	}
 
+	public static void Subscribe<TValue>(this IAsyncRxProperty<TValue> property,
+		Func<TValue, CancellationToken, UniTask> action,
+		CancellationTokenSource cts)
+	{
+		Requires.NotNullParam(property, nameof(property));
+		Requires.NotNullParam(action, nameof(action));
+		Requires.NotNull(cts, nameof(cts));
+
+		property.OnChanged += action;
+		WaitUnsubscribeCancelAsync(property, action, cts).Forget();
+	}
+
 	private static async UniTask WaitUnsubscribeCancelAsync(UnityEventBase unityEvent,
 		CancellationTokenSource cts)
 	{
@@ -92,6 +104,14 @@ public static class MonoBehaviourExtensions
 
 	private static async UniTask WaitUnsubscribeCancelAsync<TValue>(IRxProperty<TValue> property,
 		Action<TValue> action,
+		CancellationTokenSource cts)
+	{
+		await cts.Token.WaitUntilCanceled();
+		property.OnChanged -= action;
+	}
+
+	private static async UniTask WaitUnsubscribeCancelAsync<TValue>(IAsyncRxProperty<TValue> property,
+		Func<TValue, CancellationToken, UniTask> action,
 		CancellationTokenSource cts)
 	{
 		await cts.Token.WaitUntilCanceled();

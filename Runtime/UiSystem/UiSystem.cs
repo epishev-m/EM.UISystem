@@ -51,13 +51,11 @@ public sealed class UiSystem : IUiSystem
 		await OpenWithoutViewModelAsync<TView>(Modes.None, ct);
 	}
 
-	public async UniTask OpenAsync<TView, TViewModel>(Modes mode,
+	public async UniTask OpenAsync<TView>(Modes mode,
 		CancellationToken ct)
 		where TView : View
-		where TViewModel : class
 	{
-		var viewModel = _viewModelFactory.Get<TViewModel>();
-		await OpenWithViewModelAsync<TView, TViewModel>(mode, viewModel, ct);
+		await OpenWithoutViewModelAsync<TView>(mode, ct);
 	}
 
 	public async UniTask OpenAsync<TView, TViewModel>(CancellationToken ct)
@@ -68,11 +66,36 @@ public sealed class UiSystem : IUiSystem
 		await OpenWithViewModelAsync<TView, TViewModel>(Modes.None, viewModel, ct);
 	}
 
-	public async UniTask OpenAsync<TView>(Modes mode,
+	public async UniTask OpenAsync<TView, TViewModel, TData>(TData data,
 		CancellationToken ct)
 		where TView : View
+		where TViewModel : PayloadViewModel<TData>
+		where TData : class
 	{
-		await OpenWithoutViewModelAsync<TView>(mode, ct);
+		var viewModel = _viewModelFactory.Get<TViewModel>();
+		viewModel.SetData(data);
+		await OpenWithViewModelAsync<TView, TViewModel>(Modes.None, viewModel, ct);
+	}
+
+	public async UniTask OpenAsync<TView, TViewModel>(Modes mode,
+		CancellationToken ct)
+		where TView : View
+		where TViewModel : class
+	{
+		var viewModel = _viewModelFactory.Get<TViewModel>();
+		await OpenWithViewModelAsync<TView, TViewModel>(mode, viewModel, ct);
+	}
+
+	public async UniTask OpenAsync<TView, TViewModel, TData>(TData data,
+		Modes mode,
+		CancellationToken ct)
+		where TView : View
+		where TViewModel : PayloadViewModel<TData> 
+		where TData : class
+	{
+		var viewModel = _viewModelFactory.Get<TViewModel>();
+		viewModel.SetData(data);
+		await OpenWithViewModelAsync<TView, TViewModel>(mode, viewModel, ct);
 	}
 
 	public async UniTask CloseAsync<TView>(CancellationToken ct)
@@ -92,6 +115,17 @@ public sealed class UiSystem : IUiSystem
 		{
 			dispose.Dispose();
 		}
+	}
+
+	#endregion
+
+	#region UiSystem
+
+	public UiSystem(IAssetsManager assetsManager,
+		IViewModelFactory viewModelFactory)
+	{
+		_assetsManager = assetsManager;
+		_viewModelFactory = viewModelFactory;
 	}
 
 	private async UniTask OpenWithoutViewModelAsync<TView>(Modes mode,
@@ -135,17 +169,6 @@ public sealed class UiSystem : IUiSystem
 		panel.SetViewModel(viewModel);
 		await panel.OpenAsync(ct);
 		_modalLogicController.Add(panel, mode);
-	}
-
-	#endregion
-
-	#region UiSystem
-
-	public UiSystem(IAssetsManager assetsManager,
-		IViewModelFactory viewModelFactory)
-	{
-		_assetsManager = assetsManager;
-		_viewModelFactory = viewModelFactory;
 	}
 
 	#endregion

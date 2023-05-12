@@ -6,12 +6,14 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 public static class MonoBehaviourExtensions
 {
-	public static void Subscribe(this Toggle toggle,
+	public static void Subscribe(this MonoBehaviour monoBehaviour,
+		Toggle toggle,
 		UnityAction<bool> action,
 		CancellationTokenSource cts)
 	{
@@ -23,7 +25,8 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(toggle.onValueChanged, cts).Forget();
 	}
 
-	public static void Subscribe(this Button button,
+	public static void Subscribe(this MonoBehaviour monoBehaviour,
+		Button button,
 		UnityAction action,
 		CancellationTokenSource cts)
 	{
@@ -35,7 +38,8 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(button.onClick, cts).Forget();
 	}
 
-	public static void Subscribe(this TMP_InputField inputField,
+	public static void Subscribe(this MonoBehaviour monoBehaviour,
+		TMP_InputField inputField,
 		UnityAction<string> action,
 		CancellationTokenSource cts)
 	{
@@ -47,7 +51,8 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(inputField.onValueChanged, cts).Forget();
 	}
 
-	public static void Subscribe(this Slider slider,
+	public static void Subscribe(this MonoBehaviour monoBehaviour,
+		Slider slider,
 		UnityAction<float> action,
 		CancellationTokenSource cts)
 	{
@@ -59,7 +64,8 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(slider.onValueChanged, cts).Forget();
 	}
 
-	public static void Subscribe<TValue>(this UnityEvent<TValue> unityEvent,
+	public static void Subscribe<TValue>(this MonoBehaviour monoBehaviour,
+		UnityEvent<TValue> unityEvent,
 		UnityAction<TValue> action,
 		CancellationTokenSource cts)
 	{
@@ -71,7 +77,8 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(unityEvent, cts).Forget();
 	}
 
-	public static void Subscribe<TValue>(this IRxProperty<TValue> property,
+	public static void Subscribe<TValue>(this MonoBehaviour monoBehaviour,
+		IObservableField<TValue> property,
 		Action<TValue> action,
 		CancellationTokenSource cts)
 	{
@@ -83,7 +90,8 @@ public static class MonoBehaviourExtensions
 		WaitUnsubscribeCancelAsync(property, action, cts).Forget();
 	}
 
-	public static void Subscribe<TValue>(this IAsyncRxProperty<TValue> property,
+	public static void Subscribe<TValue>(this MonoBehaviour monoBehaviour,
+		IObservableFieldAsync<TValue> property,
 		Func<TValue, CancellationToken, UniTask> action,
 		CancellationTokenSource cts)
 	{
@@ -102,7 +110,7 @@ public static class MonoBehaviourExtensions
 		unityEvent.RemoveAllListeners();
 	}
 
-	private static async UniTask WaitUnsubscribeCancelAsync<TValue>(IRxProperty<TValue> property,
+	private static async UniTask WaitUnsubscribeCancelAsync<TValue>(Foundation.IObservableField<TValue> property,
 		Action<TValue> action,
 		CancellationTokenSource cts)
 	{
@@ -110,7 +118,7 @@ public static class MonoBehaviourExtensions
 		property.OnChanged -= action;
 	}
 
-	private static async UniTask WaitUnsubscribeCancelAsync<TValue>(IAsyncRxProperty<TValue> property,
+	private static async UniTask WaitUnsubscribeCancelAsync<TValue>(IObservableFieldAsync<TValue> property,
 		Func<TValue, CancellationToken, UniTask> action,
 		CancellationTokenSource cts)
 	{

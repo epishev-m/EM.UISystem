@@ -13,6 +13,19 @@ using UnityEngine.UI;
 public static class MonoBehaviourExtensions
 {
 	public static void Subscribe(this MonoBehaviour monoBehaviour,
+		TMP_Dropdown dropdown,
+		UnityAction<int> action,
+		CancellationTokenSource cts)
+	{
+		Requires.NotNullParam(dropdown, nameof(dropdown));
+		Requires.NotNullParam(action, nameof(action));
+		Requires.NotNull(cts, nameof(cts));
+
+		dropdown.onValueChanged.AddListener(action);
+		WaitUnsubscribeCancelAsync(dropdown.onValueChanged, cts).Forget();
+	}
+	
+	public static void Subscribe(this MonoBehaviour monoBehaviour,
 		Toggle toggle,
 		UnityAction<bool> action,
 		CancellationTokenSource cts)
@@ -47,8 +60,8 @@ public static class MonoBehaviourExtensions
 		Requires.NotNullParam(action, nameof(action));
 		Requires.NotNull(cts, nameof(cts));
 
-		inputField.onValueChanged.AddListener(action);
-		WaitUnsubscribeCancelAsync(inputField.onValueChanged, cts).Forget();
+		inputField.onEndEdit.AddListener(action);
+		WaitUnsubscribeCancelAsync(inputField.onEndEdit, cts).Forget();
 	}
 
 	public static void Subscribe(this MonoBehaviour monoBehaviour,

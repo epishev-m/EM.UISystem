@@ -24,7 +24,7 @@ public static class MonoBehaviourExtensions
 		dropdown.onValueChanged.AddListener(action);
 		WaitUnsubscribeCancelAsync(dropdown.onValueChanged, cts).Forget();
 	}
-	
+
 	public static void Subscribe(this MonoBehaviour monoBehaviour,
 		Toggle toggle,
 		UnityAction<bool> action,
@@ -80,6 +80,19 @@ public static class MonoBehaviourExtensions
 	public static void Subscribe<TValue>(this MonoBehaviour monoBehaviour,
 		UnityEvent<TValue> unityEvent,
 		UnityAction<TValue> action,
+		CancellationTokenSource cts)
+	{
+		Requires.NotNullParam(unityEvent, nameof(unityEvent));
+		Requires.NotNullParam(action, nameof(action));
+		Requires.NotNull(cts, nameof(cts));
+
+		unityEvent.AddListener(action);
+		WaitUnsubscribeCancelAsync(unityEvent, cts).Forget();
+	}
+
+	public static void Subscribe(this MonoBehaviour monoBehaviour,
+		UnityEvent unityEvent,
+		UnityAction action,
 		CancellationTokenSource cts)
 	{
 		Requires.NotNullParam(unityEvent, nameof(unityEvent));

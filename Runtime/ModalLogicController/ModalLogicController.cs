@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Foundation;
 
-public class ModalLogicController
+public sealed class ModalLogicController
 {
 	private readonly List<PanelViewInfo> _openPanelsViews = new(16);
 

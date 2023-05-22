@@ -1,13 +1,10 @@
 ﻿namespace EM.UI
 {
 
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(Canvas), typeof(CanvasGroup))]
 public abstract class View : MonoBehaviour
@@ -19,8 +16,6 @@ public abstract class View : MonoBehaviour
 
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
-
-	protected readonly CancellationTokenSource CtsInstance = new();
 
 	#region MonoBehaviour
 
@@ -78,7 +73,6 @@ public abstract class View : MonoBehaviour
 
 		_canvasGroup.blocksRaycasts = false;
 		_canvas.enabled = false;
-		CtsInstance.Cancel();
 
 		return UniTask.CompletedTask;
 	}
@@ -87,9 +81,11 @@ public abstract class View : MonoBehaviour
 }
 
 public abstract class View<T> : View
-	where T : class
+	where T : class, IViewModel
 {
 	protected T ViewModel;
+
+	protected readonly CancellationTokenSource CtsInstance = new();
 
 	#region View
 
@@ -97,15 +93,22 @@ public abstract class View<T> : View
 	{
 		Requires.NotNullParam(viewModel, nameof(viewModel));
 
-		ViewModel = (T)viewModel;
+		ViewModel = (T) viewModel;
+	}
+
+	public override async UniTask OpenAsync(CancellationToken ct)
+	{
+		await base.OpenAsync(ct);
 		OnInitialize();
+		ViewModel.Initialize();
 	}
 
 	public override async UniTask CloseAsync(CancellationToken ct)
 	{
 		await base.CloseAsync(ct);
+		CtsInstance.Cancel();
 		OnRelease();
-		ViewModelDispose();
+		ViewModel.Release();
 	}
 
 	#endregion
@@ -118,16 +121,6 @@ public abstract class View<T> : View
 
 	protected virtual void OnRelease()
 	{
-	}
-
-	private void ViewModelDispose()
-	{
-		if (ViewModel is IDisposable disposable)
-		{
-			disposable.Dispose();
-		}
-
-		ViewModel = null;
 	}
 
 	#endregion

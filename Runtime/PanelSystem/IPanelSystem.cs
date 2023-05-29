@@ -1,18 +1,11 @@
 namespace EM.UI
 {
-	using System.Threading;
+
+using System.Threading;
 using Cysharp.Threading.Tasks;
-using Foundation;
 
-public interface IUiSystem
+public interface IPanelSystem
 {
-	void CreateUiRootAsync(string id);
-
-	UniTask LoadAsync<TView>(CancellationToken ct)
-		where TView : View;
-
-	void Unload(LifeTime lifeTime);
-
 	UniTask OpenAsync<TView>(CancellationToken ct)
 		where TView : View;
 
@@ -27,8 +20,7 @@ public interface IUiSystem
 	UniTask OpenAsync<TView, TViewModel, TData>(TData data,
 		CancellationToken ct)
 		where TView : View
-		where TViewModel : PayloadViewModel<TData>
-		where TData : class;
+		where TViewModel : ViewModel<TData>;
 
 	UniTask OpenAsync<TView, TViewModel>(Modes mode,
 		CancellationToken ct)
@@ -39,8 +31,7 @@ public interface IUiSystem
 		Modes mode,
 		CancellationToken ct)
 		where TView : View
-		where TViewModel : PayloadViewModel<TData>
-		where TData : class;
+		where TViewModel : ViewModel<TData>;
 
 	UniTask CloseAsync<TView>(CancellationToken ct)
 		where TView : View;

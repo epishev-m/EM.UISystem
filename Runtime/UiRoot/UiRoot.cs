@@ -42,16 +42,14 @@ public sealed class UiRoot : IUiRoot
 		}
 	}
 
-	public async UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
-		where TView : View
+	public async UniTask LoadPanelViewAsync(Type type,
+		CancellationToken ct)
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
 
-		var type = typeof(TView);
-
 		if (type.GetCustomAttribute(typeof(ViewAssetAttribute)) is ViewAssetAttribute attribute)
 		{
-			var result = await _assetsManager.InstantiateAsync<TView>(attribute.Id, _rootTransform, ct);
+			var result = await _assetsManager.InstantiateAsync<View>(attribute.Id, _rootTransform, ct);
 
 			if (result.Failure)
 			{
@@ -59,7 +57,7 @@ public sealed class UiRoot : IUiRoot
 			}
 
 			var panelView = result.Data;
-			PutObject<TView>(panelView, attribute.LifeTime);
+			PutObject(type, panelView, attribute.LifeTime);
 		}
 	}
 
@@ -106,22 +104,22 @@ public sealed class UiRoot : IUiRoot
 		}
 	}
 
-	public async UniTask<TView> GetPanelViewAsync<TView>(CancellationToken ct)
-		where TView : View
+	public async UniTask<View> GetPanelViewAsync(Type type,
+		CancellationToken ct)
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
 
-		var panelView = GetObject<TView>();
+		var panelView = GetObject(type);
 
 		if (panelView != null)
 		{
-			return (TView) panelView;
+			return panelView;
 		}
 
-		await LoadPanelViewAsync<TView>(ct);
-		panelView = GetObject<TView>();
+		await LoadPanelViewAsync(type, ct);
+		panelView = GetObject(type);
 
-		return (TView) panelView;
+		return panelView;
 	}
 
 	#endregion
@@ -135,10 +133,9 @@ public sealed class UiRoot : IUiRoot
 		_assetsManager = assetsManager;
 	}
 
-	private View GetObject<TView>()
-		where TView : View
+	private View GetObject(Type type)
 	{
-		if (!_viewPanels.TryGetValue(typeof(TView), out var list))
+		if (!_viewPanels.TryGetValue(type, out var list))
 		{
 			return null;
 		}
@@ -148,12 +145,10 @@ public sealed class UiRoot : IUiRoot
 		return panelView;
 	}
 
-	private void PutObject<TView>(View panelView,
+	private void PutObject(Type key,
+		View panelView,
 		LifeTime lifeTime)
-		where TView : View
 	{
-		var key = typeof(TView);
-
 		if (!_viewPanels.TryGetValue(key, out var list))
 		{
 			list = new List<View>(4);

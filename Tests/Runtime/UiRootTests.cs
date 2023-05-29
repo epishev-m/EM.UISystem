@@ -38,8 +38,8 @@ public sealed class UiRootTests
 
 		// Act
 		uiRoot.CreateRootTransform("test");
-		uiRoot.LoadPanelViewAsync<TestPanelView>(cancellationToken);
-		var actual = uiRoot.GetPanelViewAsync<TestPanelView>(cancellationToken);
+		uiRoot.LoadPanelViewAsync(typeof(TestPanelView), cancellationToken);
+		var actual = uiRoot.GetPanelViewAsync(typeof(TestPanelView), cancellationToken);
 
 		// Assert
 		Assert.NotNull(actual);

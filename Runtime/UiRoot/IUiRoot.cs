@@ -1,21 +1,22 @@
 namespace EM.UI
 {
 
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
 
 public interface IUiRoot
 {
-	void CreateRootTransform(string id);
+	void CreateRootTransform(string assetId);
 
-	UniTask LoadPanelViewAsync<TView>(CancellationToken ct)
-		where TView : View;
+	UniTask LoadPanelViewAsync(Type type,
+		CancellationToken ct);
 
 	void UnloadPanelView(LifeTime lifeTime);
 
-	UniTask<TView> GetPanelViewAsync<TView>(CancellationToken ct)
-		where TView : View;
+	UniTask<View> GetPanelViewAsync(Type type,
+		CancellationToken ct);
 }
 
 }

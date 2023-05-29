@@ -1,49 +1,18 @@
 namespace EM.UI
 {
 
-using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Foundation;
 
-public sealed class UiSystem : IUiSystem
+public sealed class PanelSystem : IPanelSystem
 {
-	private readonly IAssetsManager _assetsManager;
-
 	private readonly IViewModelFactory _viewModelFactory;
 
 	private readonly ModalLogicController _modalLogicController = new();
 
-	private IUiRoot _uiRoot;
+	private readonly IUiRoot _uiRoot;
 
-	#region IUiSystem
-
-	public void CreateUiRootAsync(string assetId)
-	{
-		Requires.ValidOperation(_uiRoot == null, this);
-
-		_uiRoot = new UiRoot(_assetsManager);
-		_uiRoot.CreateRootTransform(assetId);
-	}
-
-	public async UniTask LoadAsync<TView>(CancellationToken ct)
-		where TView : View
-	{
-		Requires.ValidOperation(_uiRoot != null, this);
-
-		if (_uiRoot != null)
-		{
-			await _uiRoot.LoadPanelViewAsync<TView>(ct);
-		}
-	}
-
-	public void Unload(LifeTime lifeTime)
-	{
-		if (_uiRoot != null)
-		{
-			_uiRoot.UnloadPanelView(lifeTime);
-		}
-	}
+	#region IPanelSystem
 
 	public async UniTask OpenAsync<TView>(CancellationToken ct)
 		where TView : View
@@ -69,8 +38,7 @@ public sealed class UiSystem : IUiSystem
 	public async UniTask OpenAsync<TView, TViewModel, TData>(TData data,
 		CancellationToken ct)
 		where TView : View
-		where TViewModel : PayloadViewModel<TData>
-		where TData : class
+		where TViewModel : ViewModel<TData>
 	{
 		var viewModel = _viewModelFactory.Get<TViewModel>();
 		viewModel.SetData(data);
@@ -90,8 +58,7 @@ public sealed class UiSystem : IUiSystem
 		Modes mode,
 		CancellationToken ct)
 		where TView : View
-		where TViewModel : PayloadViewModel<TData> 
-		where TData : class
+		where TViewModel : ViewModel<TData>
 	{
 		var viewModel = _viewModelFactory.Get<TViewModel>();
 		viewModel.SetData(data);
@@ -101,8 +68,6 @@ public sealed class UiSystem : IUiSystem
 	public async UniTask CloseAsync<TView>(CancellationToken ct)
 		where TView : View
 	{
-		Requires.ValidOperation(_uiRoot != null, this);
-
 		if (!_modalLogicController.TryGetPanelView<TView>(out var panel))
 		{
 			return;
@@ -110,21 +75,16 @@ public sealed class UiSystem : IUiSystem
 
 		await panel.CloseAsync(ct);
 		_modalLogicController.Remove(panel);
-
-		if (panel is IDisposable dispose)
-		{
-			dispose.Dispose();
-		}
 	}
 
 	#endregion
 
-	#region UiSystem
+	#region UiViewController
 
-	public UiSystem(IAssetsManager assetsManager,
+	public PanelSystem(IUiRoot uiRoot,
 		IViewModelFactory viewModelFactory)
 	{
-		_assetsManager = assetsManager;
+		_uiRoot = uiRoot;
 		_viewModelFactory = viewModelFactory;
 	}
 
@@ -132,14 +92,7 @@ public sealed class UiSystem : IUiSystem
 		CancellationToken ct)
 		where TView : View
 	{
-		Requires.ValidOperation(_uiRoot != null, this);
-
-		if (_uiRoot == null)
-		{
-			return;
-		}
-
-		var panel = await _uiRoot.GetPanelViewAsync<TView>(ct);
+		var panel = await _uiRoot.GetPanelViewAsync(typeof(TView), ct);
 		await panel.OpenAsync(ct);
 		_modalLogicController.Add(panel, mode);
 	}
@@ -150,22 +103,7 @@ public sealed class UiSystem : IUiSystem
 		where TView : View
 		where TViewModel : class
 	{
-		Requires.ValidOperation(_uiRoot != null, this);
-
-		if (_uiRoot == null)
-		{
-			return;
-		}
-
-		var panel = await _uiRoot.GetPanelViewAsync<TView>(ct);
-
-		Requires.NotNull(panel, nameof(panel));
-
-		if (panel == null)
-		{
-			return;
-		}
-
+		var panel = await _uiRoot.GetPanelViewAsync(typeof(TView), ct);
 		panel.SetViewModel(viewModel);
 		await panel.OpenAsync(ct);
 		_modalLogicController.Add(panel, mode);

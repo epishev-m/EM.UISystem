@@ -1,6 +1,7 @@
 ﻿namespace EM.UI
 {
 
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
@@ -47,7 +48,10 @@ public abstract class View : MonoBehaviour
 		set => _canvasGroup.blocksRaycasts = value;
 	}
 
-	public abstract void SetViewModel(object viewModel);
+	public virtual void SetViewModel(object viewModel)
+	{
+		throw new NotImplementedException();
+	}
 
 	public virtual UniTask OpenAsync(CancellationToken ct)
 	{
@@ -81,7 +85,7 @@ public abstract class View : MonoBehaviour
 }
 
 public abstract class View<T> : View
-	where T : class, IViewModel
+	where T : IViewModel
 {
 	protected T ViewModel;
 

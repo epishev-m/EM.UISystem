@@ -89,7 +89,7 @@ public abstract class View<T> : View
 {
 	protected T ViewModel;
 
-	protected readonly CancellationTokenSource CtsInstance = new();
+	protected CancellationTokenSource CtsInstance;
 
 	#region View
 
@@ -103,6 +103,7 @@ public abstract class View<T> : View
 	public override async UniTask OpenAsync(CancellationToken ct)
 	{
 		await base.OpenAsync(ct);
+		CtsInstance = new CancellationTokenSource();
 		OnInitialize();
 		ViewModel.Initialize();
 	}
@@ -111,6 +112,7 @@ public abstract class View<T> : View
 	{
 		await base.CloseAsync(ct);
 		CtsInstance.Cancel();
+		CtsInstance = null;
 		OnRelease();
 		ViewModel.Release();
 	}

@@ -14,6 +14,13 @@ public sealed class PanelSystem : IPanelSystem
 
 	#region IPanelSystem
 
+	public bool IsOpened<TView>() where TView : View
+	{
+		var result = _modalLogicController.TryGetPanelView<TView>(out _);
+
+		return result;
+	}
+
 	public async UniTask OpenAsync<TView>(CancellationToken ct)
 		where TView : View
 	{

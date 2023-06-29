@@ -6,6 +6,9 @@ using Cysharp.Threading.Tasks;
 
 public interface IPanelSystem
 {
+	bool IsOpened<TView>()
+		where TView : View;
+
 	UniTask OpenAsync<TView>(CancellationToken ct)
 		where TView : View;
 

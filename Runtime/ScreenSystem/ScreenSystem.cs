@@ -14,7 +14,7 @@ public sealed class ScreenSystem : Binder,
 {
 	private readonly IViewModelFactory _viewModelFactory;
 
-	private readonly Dictionary<BindingKey, View> _keysViewMap = new();
+	private readonly Dictionary<BindingKey, PanelView> _keysViewMap = new();
 
 	private readonly Stack<ValueTuple<object, object>> _screensStack = new();
 
@@ -81,6 +81,7 @@ public sealed class ScreenSystem : Binder,
 			}
 
 			await CloseTooltipAsync(ct);
+
 			return;
 		}
 
@@ -88,6 +89,7 @@ public sealed class ScreenSystem : Binder,
 		{
 			Enable(_currentScreen);
 			await ClosePopupAsync(ct);
+
 			return;
 		}
 
@@ -224,7 +226,7 @@ public sealed class ScreenSystem : Binder,
 		object data,
 		CancellationToken ct)
 	{
-		var views = new List<View>();
+		var views = new List<PanelView>();
 		var openList = binding.Values.Select(obj => (BindingKey) obj);
 
 		foreach (var key in openList)
@@ -244,7 +246,7 @@ public sealed class ScreenSystem : Binder,
 	private async UniTask CloseViewsAsync(IEnumerable<BindingKey> closeList,
 		CancellationToken ct)
 	{
-		var views = new List<View>();
+		var views = new List<PanelView>();
 
 		foreach (var key in closeList)
 		{

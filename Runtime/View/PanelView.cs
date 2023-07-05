@@ -1,22 +1,25 @@
 ﻿namespace EM.UI
 {
 
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Foundation;
 using UnityEngine;
 
 [RequireComponent(typeof(Canvas), typeof(CanvasGroup))]
-public abstract class View : MonoBehaviour
+public abstract class PanelView : MonoBehaviour
 {
-	[Header(nameof(View))]
+	[Header(nameof(PanelView))]
 
 	[SerializeField]
 	private Canvas _canvas;
 
 	[SerializeField]
 	private CanvasGroup _canvasGroup;
+
+	protected List<WidgetView> Widgets = new(4);
 
 	#region MonoBehaviour
 
@@ -38,7 +41,7 @@ public abstract class View : MonoBehaviour
 
 	#endregion
 
-	#region View
+	#region PanelView
 
 	public bool IsOpened => _canvas.enabled;
 
@@ -50,7 +53,7 @@ public abstract class View : MonoBehaviour
 
 	public virtual void SetViewModel(object viewModel)
 	{
-		throw new NotImplementedException();
+		OnSettingViewModel();
 	}
 
 	public virtual UniTask OpenAsync(CancellationToken ct)
@@ -62,6 +65,8 @@ public abstract class View : MonoBehaviour
 			return UniTask.CompletedTask;
 		}
 
+		InitializeWidgets();
+		OnInitialize();
 		_canvas.enabled = true;
 		_canvasGroup.blocksRaycasts = true;
 
@@ -77,49 +82,33 @@ public abstract class View : MonoBehaviour
 
 		_canvasGroup.blocksRaycasts = false;
 		_canvas.enabled = false;
+		OnRelease();
+		ReleaseWidgets();
 
 		return UniTask.CompletedTask;
 	}
 
-	#endregion
-}
-
-public abstract class View<T> : View
-	where T : IViewModel
-{
-	protected T ViewModel;
-
-	protected CancellationTokenSource CtsInstance;
-
-	#region View
-
-	public override void SetViewModel(object viewModel)
+	protected void AddWidget(WidgetView widget,
+		IViewModel viewModel)
 	{
+		Requires.NotNullParam(widget, nameof(widget));
 		Requires.NotNullParam(viewModel, nameof(viewModel));
 
-		ViewModel = (T) viewModel;
+		widget.SetViewModel(viewModel);
+		AddWidget(widget);
 	}
 
-	public override async UniTask OpenAsync(CancellationToken ct)
+	protected void AddWidget(WidgetView widget)
 	{
-		await base.OpenAsync(ct);
-		CtsInstance = new CancellationTokenSource();
-		OnInitialize();
-		ViewModel.Initialize();
+		Requires.NotNullParam(widget, nameof(widget));
+		Requires.ValidOperation(Widgets.All(view => view != widget), this);
+
+		Widgets.Add(widget);
 	}
 
-	public override async UniTask CloseAsync(CancellationToken ct)
+	protected virtual void OnSettingViewModel()
 	{
-		await base.CloseAsync(ct);
-		CtsInstance.Cancel();
-		CtsInstance = null;
-		OnRelease();
-		ViewModel.Release();
 	}
-
-	#endregion
-
-	#region View<T>
 
 	protected virtual void OnInitialize()
 	{
@@ -129,7 +118,62 @@ public abstract class View<T> : View
 	{
 	}
 
+	private void InitializeWidgets()
+	{
+		foreach (var widget in Widgets)
+		{
+			widget.Initialize();
+		}
+	}
+
+	private void ReleaseWidgets()
+	{
+		foreach (var widget in Widgets)
+		{
+			widget.Release();
+		}
+
+		Widgets.Clear();
+	}
+
+	#endregion
+}
+
+public abstract class PanelView<T> : PanelView
+	where T : IViewModel
+{
+	protected T ViewModel;
+
+	protected CancellationTokenSource CtsInstance;
+
+	#region PanelView
+
+	public override void SetViewModel(object viewModel)
+	{
+		Requires.NotNullParam(viewModel, nameof(viewModel));
+
+		CtsInstance = new CancellationTokenSource();
+		ViewModel = (T) viewModel;
+		base.SetViewModel(viewModel);
+	}
+
+	public override async UniTask OpenAsync(CancellationToken ct)
+	{
+		ViewModel.Initialize();
+		await base.OpenAsync(ct);
+	}
+
+	public override async UniTask CloseAsync(CancellationToken ct)
+	{
+		CtsInstance.Cancel();
+		CtsInstance = null;
+		await base.CloseAsync(ct);
+		ViewModel.Release();
+		ViewModel = default;
+	}
+
 	#endregion
 }
 
 }
+

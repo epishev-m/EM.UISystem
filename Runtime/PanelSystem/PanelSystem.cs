@@ -14,7 +14,7 @@ public sealed class PanelSystem : IPanelSystem
 
 	#region IPanelSystem
 
-	public bool IsOpened<TView>() where TView : View
+	public bool IsOpened<TView>() where TView : PanelView
 	{
 		var result = _modalLogicController.TryGetPanelView<TView>(out _);
 
@@ -22,20 +22,20 @@ public sealed class PanelSystem : IPanelSystem
 	}
 
 	public async UniTask OpenAsync<TView>(CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 	{
 		await OpenWithoutViewModelAsync<TView>(Modes.None, ct);
 	}
 
 	public async UniTask OpenAsync<TView>(Modes mode,
 		CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 	{
 		await OpenWithoutViewModelAsync<TView>(mode, ct);
 	}
 
 	public async UniTask OpenAsync<TView, TViewModel>(CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 		where TViewModel : class
 	{
 		var viewModel = _viewModelFactory.Get<TViewModel>();
@@ -44,7 +44,7 @@ public sealed class PanelSystem : IPanelSystem
 
 	public async UniTask OpenAsync<TView, TViewModel, TData>(TData data,
 		CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 		where TViewModel : ViewModel<TData>
 	{
 		var viewModel = _viewModelFactory.Get<TViewModel>();
@@ -54,7 +54,7 @@ public sealed class PanelSystem : IPanelSystem
 
 	public async UniTask OpenAsync<TView, TViewModel>(Modes mode,
 		CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 		where TViewModel : class
 	{
 		var viewModel = _viewModelFactory.Get<TViewModel>();
@@ -64,7 +64,7 @@ public sealed class PanelSystem : IPanelSystem
 	public async UniTask OpenAsync<TView, TViewModel, TData>(TData data,
 		Modes mode,
 		CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 		where TViewModel : ViewModel<TData>
 	{
 		var viewModel = _viewModelFactory.Get<TViewModel>();
@@ -73,7 +73,7 @@ public sealed class PanelSystem : IPanelSystem
 	}
 
 	public async UniTask CloseAsync<TView>(CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 	{
 		if (!_modalLogicController.TryGetPanelView<TView>(out var panel))
 		{
@@ -97,7 +97,7 @@ public sealed class PanelSystem : IPanelSystem
 
 	private async UniTask OpenWithoutViewModelAsync<TView>(Modes mode,
 		CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 	{
 		var panel = await _uiRoot.GetPanelViewAsync(typeof(TView), ct);
 		await panel.OpenAsync(ct);
@@ -107,7 +107,7 @@ public sealed class PanelSystem : IPanelSystem
 	private async UniTask OpenWithViewModelAsync<TView, TViewModel>(Modes mode,
 		TViewModel viewModel,
 		CancellationToken ct)
-		where TView : View
+		where TView : PanelView
 		where TViewModel : class
 	{
 		var panel = await _uiRoot.GetPanelViewAsync(typeof(TView), ct);

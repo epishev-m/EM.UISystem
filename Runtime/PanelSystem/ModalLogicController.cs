@@ -11,16 +11,16 @@ public sealed class ModalLogicController
 
 	#region ModalLogicController
 
-	public bool TryGetPanelView<TView>(out View panelView)
-		where TView : View
+	public bool TryGetPanelView<TView>(out PanelView panelView)
+		where TView : PanelView
 	{
-		var panelViewInfo = _openPanelsViews.LastOrDefault(pv => pv.View is TView);
-		panelView = panelViewInfo?.View;
+		var panelViewInfo = _openPanelsViews.LastOrDefault(pv => pv.PanelView is TView);
+		panelView = panelViewInfo?.PanelView;
 
 		return panelViewInfo != null;
 	}
 
-	public void Add(View panel,
+	public void Add(PanelView panel,
 		Modes mode)
 	{
 		Requires.NotNullParam(panel, nameof(panel));
@@ -35,11 +35,11 @@ public sealed class ModalLogicController
 		}
 	}
 
-	public void Remove(View panel)
+	public void Remove(PanelView panel)
 	{
 		Requires.NotNullParam(panel, nameof(panel));
 
-		var panelInfo = _openPanelsViews.Find(info => info.View == panel);
+		var panelInfo = _openPanelsViews.Find(info => info.PanelView == panel);
 
 		if (panelInfo.Mode == Modes.Modal)
 		{
@@ -51,11 +51,11 @@ public sealed class ModalLogicController
 		}
 	}
 
-	private void Add(View panel)
+	private void Add(PanelView panel)
 	{
 		Requires.NotNullParam(panel, nameof(panel));
 
-		var panelInfo = _openPanelsViews.Find(info => info.View == panel);
+		var panelInfo = _openPanelsViews.Find(info => info.PanelView == panel);
 
 		if (panelInfo != null)
 		{
@@ -69,11 +69,11 @@ public sealed class ModalLogicController
 		}
 	}
 
-	private void AddModal(View panel)
+	private void AddModal(PanelView panel)
 	{
 		Requires.NotNullParam(panel, nameof(panel));
 
-		var viewInfo = _openPanelsViews.Find(info => info.View == panel);
+		var viewInfo = _openPanelsViews.Find(info => info.PanelView == panel);
 
 		if (viewInfo != null)
 		{
@@ -84,7 +84,7 @@ public sealed class ModalLogicController
 
 		foreach (var info in _openPanelsViews)
 		{
-			info.View.IsInteractable = false;
+			info.PanelView.IsInteractable = false;
 		}
 
 		_openPanelsViews.Add(viewInfo);
@@ -108,7 +108,7 @@ public sealed class ModalLogicController
 
 		foreach (var viewInfo in _openPanelsViews)
 		{
-			viewInfo.View.IsInteractable = true;
+			viewInfo.PanelView.IsInteractable = true;
 
 			if (viewInfo.Mode == Modes.Modal)
 			{

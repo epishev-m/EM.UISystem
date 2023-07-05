@@ -87,7 +87,7 @@ public sealed class ScreenSystemBinding : Binding,
 	#region IScreenSystemBinding
 
 	public IScreenSystemBinding To<TView, TViewModel>()
-		where TView : View
+		where TView : PanelView
 		where TViewModel : IViewModel
 	{
 		Requires.ValidOperation(LifeTime != LifeTime.None, this);

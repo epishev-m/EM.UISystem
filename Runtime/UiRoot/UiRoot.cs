@@ -12,7 +12,7 @@ using UnityEngine;
 
 public sealed class UiRoot : IUiRoot
 {
-	private readonly Dictionary<Type, List<View>> _viewPanels = new();
+	private readonly Dictionary<Type, List<PanelView>> _viewPanels = new();
 
 	private readonly Dictionary<Type, LifeTime> _lifeTimeInfoList = new();
 
@@ -49,7 +49,7 @@ public sealed class UiRoot : IUiRoot
 
 		if (type.GetCustomAttribute(typeof(ViewAssetAttribute)) is ViewAssetAttribute attribute)
 		{
-			var result = await _assetsManager.InstantiateAsync<View>(attribute.Id, _rootTransform, ct);
+			var result = await _assetsManager.InstantiateAsync<PanelView>(attribute.Id, _rootTransform, ct);
 
 			if (result.Failure)
 			{
@@ -74,7 +74,7 @@ public sealed class UiRoot : IUiRoot
 				continue;
 			}
 
-			var openedPanelsViews = new List<View>();
+			var openedPanelsViews = new List<PanelView>();
 
 			foreach (var panelView in panelsViewsList)
 			{
@@ -104,7 +104,7 @@ public sealed class UiRoot : IUiRoot
 		}
 	}
 
-	public async UniTask<View> GetPanelViewAsync(Type type,
+	public async UniTask<PanelView> GetPanelViewAsync(Type type,
 		CancellationToken ct)
 	{
 		Requires.ValidOperation(_rootTransform != null, this);
@@ -133,7 +133,7 @@ public sealed class UiRoot : IUiRoot
 		_assetsManager = assetsManager;
 	}
 
-	private View GetObject(Type type)
+	private PanelView GetObject(Type type)
 	{
 		if (!_viewPanels.TryGetValue(type, out var list))
 		{
@@ -146,12 +146,12 @@ public sealed class UiRoot : IUiRoot
 	}
 
 	private void PutObject(Type key,
-		View panelView,
+		PanelView panelView,
 		LifeTime lifeTime)
 	{
 		if (!_viewPanels.TryGetValue(key, out var list))
 		{
-			list = new List<View>(4);
+			list = new List<PanelView>(4);
 			_viewPanels.Add(key, list);
 			_lifeTimeInfoList.Add(key, lifeTime);
 		}

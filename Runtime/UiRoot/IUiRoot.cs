@@ -15,7 +15,7 @@ public interface IUiRoot
 
 	void UnloadPanelView(LifeTime lifeTime);
 
-	UniTask<View> GetPanelViewAsync(Type type,
+	UniTask<PanelView> GetPanelViewAsync(Type type,
 		CancellationToken ct);
 }
 

@@ -125,13 +125,13 @@ public sealed class UiRootTests
 		}
 	}
 
-	private sealed class TestPanelView : View
+	private sealed class TestPanelView : PanelView
 	{
 		public override void SetViewModel(object viewModel)
 		{
 			throw new NotImplementedException();
 		}
 	}
-	
+
 	#endregion
 }

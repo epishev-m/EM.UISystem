@@ -133,7 +133,7 @@ internal sealed class ModalLogicControllerTests
 
 	#region Nested
 
-	private sealed class PanelViewTest : View
+	private sealed class PanelViewTest : PanelView
 	{
 		public override void SetViewModel(object viewModel)
 		{

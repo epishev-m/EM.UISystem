@@ -20,6 +20,7 @@ public abstract class ViewModel<T> : IViewModel
 	public void SetData(object obj)
 	{
 		Requires.NotNullParam(obj, nameof(obj));
+		Requires.Type<T>(obj, nameof(obj));
 
 		if (obj is T data)
 		{

@@ -20,23 +20,14 @@ public abstract class WidgetView : MonoBehaviour
 
 	public virtual void Initialize()
 	{
-		foreach (var widget in Widgets)
-		{
-			widget.Initialize();
-		}
-
+		InitializeWidgets();
 		OnInitialize();
 	}
 
 	public virtual void Release()
 	{
-		foreach (var widget in Widgets)
-		{
-			widget.Release();
-		}
-
-		Widgets.Clear();
 		OnRelease();
+		ReleaseWidgets();
 	}
 
 	protected void AddWidget(WidgetView widget,
@@ -67,6 +58,24 @@ public abstract class WidgetView : MonoBehaviour
 
 	protected virtual void OnSettingViewModel()
 	{
+	}
+
+	private void InitializeWidgets()
+	{
+		foreach (var widget in Widgets)
+		{
+			widget.Initialize();
+		}
+	}
+
+	private void ReleaseWidgets()
+	{
+		foreach (var widget in Widgets)
+		{
+			widget.Release();
+		}
+
+		Widgets.Clear();
 	}
 
 	#endregion

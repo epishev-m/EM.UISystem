@@ -151,6 +151,7 @@ public abstract class PanelView<T> : PanelView
 	public override void SetViewModel(object viewModel)
 	{
 		Requires.NotNullParam(viewModel, nameof(viewModel));
+		Requires.Type<T>(viewModel, nameof(viewModel));
 
 		CtsInstance = new CancellationTokenSource();
 		ViewModel = (T) viewModel;

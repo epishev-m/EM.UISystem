@@ -14,7 +14,7 @@ public sealed class ScreenSystem : Binder,
 {
 	private readonly IViewModelFactory _viewModelFactory;
 
-	private readonly Dictionary<BindingKey, PanelView> _keysViewMap = new();
+	private readonly Dictionary<BindingKey, Stack<PanelView>> _keysViewMap = new();
 
 	private readonly Stack<ValueTuple<object, object>> _screensStack = new();
 
@@ -73,6 +73,8 @@ public sealed class ScreenSystem : Binder,
 	{
 		if (_currentTooltip != null)
 		{
+			await CloseTooltipAsync(ct);
+
 			Enable(_currentPopup);
 
 			if (_currentPopup == null)
@@ -80,15 +82,13 @@ public sealed class ScreenSystem : Binder,
 				Enable(_currentScreen);
 			}
 
-			await CloseTooltipAsync(ct);
-
 			return;
 		}
 
 		if (_currentPopup != null)
 		{
-			Enable(_currentScreen);
 			await ClosePopupAsync(ct);
+			Enable(_currentScreen);
 
 			return;
 		}
@@ -236,7 +236,14 @@ public sealed class ScreenSystem : Binder,
 			viewModel.SetData(data);
 			view.SetViewModel(viewModel);
 			views.Add(view);
-			_keysViewMap.Add(key, view);
+
+			if (!_keysViewMap.TryGetValue(key, out var stackViews))
+			{
+				stackViews = new Stack<PanelView>();
+				_keysViewMap.Add(key, stackViews);
+			}
+
+			stackViews.Push(view);
 		}
 
 		var tasks = views.Select(view => view.OpenAsync(ct));
@@ -250,7 +257,12 @@ public sealed class ScreenSystem : Binder,
 
 		foreach (var key in closeList)
 		{
-			if (_keysViewMap.Remove(key, out var view))
+			if (!_keysViewMap.TryGetValue(key, out var stackViews))
+			{
+				continue;
+			}
+
+			if (stackViews.TryPop(out var view))
 			{
 				views.Add(view);
 			}
@@ -270,7 +282,8 @@ public sealed class ScreenSystem : Binder,
 		SetInteractableByKey(key, true);
 	}
 
-	private void SetInteractableByKey(object key, bool value)
+	private void SetInteractableByKey(object key,
+		bool value)
 	{
 		if (key == null)
 		{
@@ -287,7 +300,12 @@ public sealed class ScreenSystem : Binder,
 
 		foreach (var bindingKey in closeList)
 		{
-			if (_keysViewMap.TryGetValue(bindingKey, out var view))
+			if (!_keysViewMap.TryGetValue(bindingKey, out var stackViews))
+			{
+				continue;
+			}
+
+			if (stackViews.TryPeek(out var view))
 			{
 				view.IsInteractable = value;
 			}

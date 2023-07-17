@@ -29,12 +29,43 @@ public abstract class WidgetView : MonoBehaviour
 		OnRelease();
 		ReleaseWidgets();
 	}
+	
+	protected bool TryAddWidget(WidgetView widget,
+		IViewModel viewModel)
+	{
+		if (widget == null || viewModel == null)
+		{
+			return false;
+		}
+
+		Requires.ValidOperation(Widgets.All(view => view != widget), this);
+
+		widget.SetViewModel(viewModel);
+		AddWidget(widget);
+
+		return true;
+	}
+
+	protected bool TryAddWidget(WidgetView widget)
+	{
+		if (widget == null)
+		{
+			return false;
+		}
+
+		Requires.ValidOperation(Widgets.All(view => view != widget), this);
+
+		Widgets.Add(widget);
+
+		return true;
+	}
 
 	protected void AddWidget(WidgetView widget,
 		IViewModel viewModel)
 	{
 		Requires.NotNullParam(widget, nameof(widget));
 		Requires.NotNullParam(viewModel, nameof(viewModel));
+		Requires.ValidOperation(Widgets.All(view => view != widget), this);
 
 		widget.SetViewModel(viewModel);
 		AddWidget(widget);

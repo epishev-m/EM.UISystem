@@ -97,6 +97,13 @@ public sealed class ScreenSystemBinding : Binding,
 		return base.To(value) as IScreenSystemBinding;
 	}
 
+	public IScreenSystemBinding To<TView, TViewModel>(bool condition)
+		where TView : PanelView
+		where TViewModel : IViewModel
+	{
+		return !condition ? this : To<TView, TViewModel>();
+	}
+
 	#endregion
 
 	#region ScreenSystemBinding

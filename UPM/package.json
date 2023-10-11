@@ -1,0 +1,14 @@
+{
+  "name": "com.em.uisystem",
+  "displayName": "EM.UISystem",
+  "version": "1.0.0",
+  "author": {
+    "name": "Maxim Epishev",
+    "email": "epishev.m@mail.ru"
+  },
+  "dependencies": {
+    "com.em.foundation": "1.1.0",
+    "com.cysharp.unitask": "2.4.1",
+    "com.unity.textmeshpro": "3.0.6"
+  }
+}

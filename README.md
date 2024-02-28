@@ -1,5 +1,7 @@
 # EM.UISystem
 
+MVVM. Screens and panels system. Allows you to assemble composite screens from individual panels.  Panel Pulling. Preloading of panel prefabs.
+
 ## Installation
 
 ### Git
